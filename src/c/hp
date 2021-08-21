@@ -1,0 +1,4 @@
+#var hp {{breath}{60}}
+#tick {hp} {hp} {$hp[breath]}
+
+#alias {set_breath} {#if {"%1" == ""} {#untick hp;wk_log info {Stop breath is stopped auto-hp.};#return}; #var hp[breath] %1; #tick {hp} {hp} {$hp[breath]}}

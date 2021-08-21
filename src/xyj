@@ -1,0 +1,34 @@
+#READ {./src/lib/config}
+#READ {./src/lib/common}
+
+#CONFIG {CHARSET} {GBK-1}
+#PATHDIR {d} {u} {32}
+#PATHDIR {e} {w} {2}
+#PATHDIR {n} {s} {1}
+#PATHDIR {ne} {sw} {3}
+#PATHDIR {nw} {se} {9}
+#PATHDIR {s} {n} {4}
+#PATHDIR {se} {nw} {6}
+#PATHDIR {sw} {ne} {12}
+#PATHDIR {u} {d} {16}
+#PATHDIR {w} {e} {8}
+#PATHDIR {nu} {sd} {17}
+#PATHDIR {sd} {nu} {36}
+#PATHDIR {su} {nd} {20}
+#PATHDIR {nd} {su} {33}
+#PATHDIR {wu} {ed} {24}
+#PATHDIR {ed} {wu} {34}
+#PATHDIR {eu} {wd} {18}
+#PATHDIR {wd} {eu} {40}
+#PATHDIR {enter} {out} {49}
+#PATHDIR {out} {enter} {50}
+#PATHDIR {bed} {out} {51}
+#PATHDIR {climb tree} {d} {52}
+#PATHDIR {swim} {swim} {53}
+#PATHDIR {zuo mufa} {out} {54}
+#PATHDIR {dive} {u} {55}
+
+#SESSION xyj xiyouji.org 6666;gb;no;
+
+#var {_ui} 0
+#alias {ui} {#math {_ui} {($_ui + 1) % 2};#if {$_ui == 1} {#class ui read {./lib/ui};#echo {Switch UI to ON}};#else {#map destroy world;#class mapper kill;#class ui kill;#unsplit;#echo {Switch UI to OFF}}}

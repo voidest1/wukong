@@ -1,0 +1,19 @@
+#screen get cols {config[cols]}
+#screen get rows {config[rows]}
+#event {SCREEN RESIZE} {#var config[rows] %0;#var config[cols] %1}
+#split
+
+#alias {ui} {
+	#math {config[ui]} {($config[ui] + 1) % 2};
+	#if {$config[ui] == 0} {
+		#split
+	};
+	#else {
+		#math __right {$config[cols] - $config[game_cols]};
+		#split 0 3 0  $__right;
+		#unvar __right;
+	}
+}
+#alias {ui_reg} {
+	
+}
