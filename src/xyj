@@ -1,7 +1,8 @@
-#READ {./src/lib/config}
-#READ {./src/lib/common}
+#READ {./lib/config}
+#READ {./lib/common}
 
 #CONFIG {CHARSET} {GBK-1}
+
 #PATHDIR {d} {u} {32}
 #PATHDIR {e} {w} {2}
 #PATHDIR {n} {s} {1}
@@ -28,7 +29,15 @@
 #PATHDIR {zuo mufa} {out} {54}
 #PATHDIR {dive} {u} {55}
 
+#ACTION {^>%s$} {#if {$config[gag_blank] == 1} {#line gag}}
+
 #SESSION xyj xiyouji.org 6666;gb;no;
 
-#var {_ui} 0
-#alias {ui} {#math {_ui} {($_ui + 1) % 2};#if {$_ui == 1} {#class ui read {./lib/ui};#echo {Switch UI to ON}};#else {#map destroy world;#class mapper kill;#class ui kill;#unsplit;#echo {Switch UI to OFF}}}
+#act {终端机型态设定为 TINTIN++。}{
+	wk_require hp;
+	wk_require ui;
+	#unact {终端机型态设定为 TINTIN++。};
+	#line gag;
+	#delay {1} {#echo {---- Welcome to 悟空v1.0 for 西游记(MUD) ----}};
+}
+
