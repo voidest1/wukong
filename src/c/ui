@@ -1,19 +1,48 @@
 #screen get cols {config[cols]}
 #screen get rows {config[rows]}
-#event {SCREEN RESIZE} {#var config[rows] %0;#var config[cols] %1}
-#split
-
+#var messages {}
+#event {SCREEN RESIZE} {#var config[rows] %0;#var config[cols] %1;ui r}
+#var panel {}
 #alias {ui} {
-	#math {config[ui]} {($config[ui] + 1) % 2};
+	#if {"%1" != "r"} {
+		#math {config[ui]} {($config[ui] + 1) % 2};
+	};
 	#if {$config[ui] == 0} {
-		#split
+		#split;
+		map;
 	};
 	#else {
-		#math __right {$config[cols] - $config[game_cols]};
-		#split 0 3 0  $__right;
-		#unvar __right;
+		#math panel[top] 1;
+		#math panel[left] {$config[game_cols] - $config[cols] + 1};
+		#math panel[right] {$config[game_cols] + $config[panel_cols] - $config[cols] + 2};
+		#math panel[bottom] {$config[rows] - 4};
+		#split 0 3 0  {$config[cols] - $config[game_cols]};
+		map 1;
+		ui_show_messages;
 	}
 }
-#alias {ui_reg} {
-	
+#alias {ui_message} {
+	#if {"%0" == ""} {#return};
+	#list messages add %0;
+	ui_show_messages;
 }
+#alias {ui_show_messages}{
+	#local __top 0;
+	#local __rows 0;
+	#math __top {$config[panel_cols] / 2 + 3};
+	#math __rows {$panel[bottom] - $__top};
+	#screen clear square {$__top} {$panel[left]} {$panel[bottom]} {-1};
+	#draw cyan rounded box {$__top} {$panel[left] + 1} {$panel[bottom]} {-1} $messages[-$__rows..-1];
+}
+#tick {ui_draw} {
+	#if {$config[ui] != 1} {#return};
+	#screen clear square {-3} {2} {-3} {$config[cols] - 3};
+	#show {@hp_draw{}} {-3} {2};
+	#screen clear square {$config[panel_cols] / 2 + 2} {$panel[left] + 1} {$config[panel_cols] / 2 + 2} {-1};
+	#show {@hp_ex{}} {$config[panel_cols] / 2 + 2} {$panel[left] + 1};
+	#screen clear square {$config[panel_cols] / 2 + 1} {$panel[left]} {$config[panel_cols] / 2 + 1} {-1};
+	#show {@map_draw{}} {$config[panel_cols] / 2 + 1} {$config[game_cols] - $config[cols] + 1};
+} {0.5}
+
+#macro {\cu} {#buffer up {$config[cols] - 3}}
+#macro {\cn} {#buffer down {$config[cols] - 3}}

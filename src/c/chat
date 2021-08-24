@@ -1,0 +1,4 @@
+#act {^%1告诉你：%2} {ui_message {%0}}
+#act {^%1在你的耳边悄声说道：%2$} {ui_message {%0}}
+#act {^%1回答你：%2$} {ui_message {%0}}
+#act {^【队伍】%1：%2$} {ui_message {%0}}

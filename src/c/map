@@ -1,0 +1,115 @@
+#var inroom {}
+#act {^%P%S%P - %P$} {
+	#var inroom[cname] %2;
+	#if {$edit[name] != 1} {#return};
+	#if {"$inroom[cname]" != "$inroom[map][name]"} {#map set roomname $inroom[cname];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[cname]};#var inroom[map][name] $inroom[cname];#bell;};
+}
+#act {^%1一把抓住了你！$} {#line quiet {#map undo;#path stop;#bell}}
+#act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {#line quiet {#map undo;#path stop;#bell}}
+#alias {map} {
+	#if {"%1" == ""} {
+		#line quiet {#map destroy world};
+		#echo {Swith off to map};
+		#return;
+	};
+	#line quiet {#map destroy world};
+	#map read {./map/xyj.map};
+	#map goto 1;
+	#map flag nofollow;
+	#map offset 1 {$config[game_cols] - $config[cols] + 1} {$config[panel_cols] / 2} {-1};
+	#if {$config[ui] != 1} {#map flag vtmap};
+	#echo {Switch on to map};
+}
+#alias {map_style} {#map flag asciigraphics}
+#event {MAP ENTER ROOM} {
+	#map get all {inroom[map]} {%0};
+}
+#func {map_draw} {
+	#local __color {<099>};
+	#if {"$inroom[cname]" != "$inroom[map][name]"} {
+		#local __color {<139>};
+	};
+	#format {result} {%s - %s%s<099> #%s@%s} {$inroom[cname]} {$__color} {$inroom[map][name]} {$inroom[map][vnum]} {$inroom[map][area]}
+}
+#alias {g} {#if {"%1" == ""} {#echo {Syntax: g <room name>};#return};#map run {%1} {0.5}}
+#alias {map_pos} {
+	#if {"%1" == ""} {#echo {Syntax: map_pos <room name>|<room evnum>|<exits>};#return};
+	#map goto {%1};
+}
+
+#alias {scout} {
+	#if {"%2" == ""} {#echo {Syntax: scout <keyword> <area> [<who>]};#return};
+    #var __searching 1;
+    #map list {roomarea} {%2} {variable} {__rooms};
+    #map get roomvnum __current;
+    #list {__rooms} size __count;
+    #if {$__count == 0} {#echo {No room in area %2};#unvar __searching;#return};
+    #act {%1} {#unevent {END OF RUN};#path stop;#unact {%1};#bell;#echo {Found %1 here in $inroom[cname]};ui_message {[scout]: %1 in $inroom[cname]};#if {"%3" != ""} {tell %3 %1 in $inroom[cname]}} {1};
+    #var __n 1;
+    #if {$__current == *__rooms[+$__n]} {#math __n {$__n+1}};
+    #map get roomname {__name} *__rooms[+$__n];
+    #map find $__name;
+    #path run {0.5};
+    #event {END OF RUN} {
+        #math __n {$__n+1};
+        #if {$__current == *__rooms[+$__n]} {#math __n {$__n+1}};
+        #if {$__n > $__count} {
+            #unvar __searching;
+            #unact {%1};
+            #unevent {END OF RUN};
+            #nop here is completed search;
+            #echo {Searched $__count rooms, completed.};
+            #return;
+        };
+        #map get {roomname} {__name} *__rooms[+$__n];
+        #map find $__name;
+        #path run {0.5};
+    };
+}
+#func {map_area_c2e} {
+	#switch {"%0"} {
+		#case "长安城" {#return changan};
+		#case "长安城西" {#return changan-west};
+		#case "月宫" {#return moon};
+		#case "开封城" {#return kaifeng};
+		#case "高老庄" {#return gao};
+		#case "方寸山" {#return fangcun};
+		#case "龙宫" {#return longong};
+		#case "普陀山" {#return putuo};
+		#default {#return %0};
+	}
+}
+#nop ####### Edit ######
+#var edit {{name}{0}}
+#alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};
+#alias {map.setname} {
+	#map set roomname $inroom[cname];
+	#var inroom[map][name] $inroom[cname];
+	#bell;
+}
+#alias {map.save} {
+	#map write {./map/xyj.map};
+	#echo {Saved map to ./map/xyj.map};
+}
+#alias {map.check} {
+    #map list {variable} {__rooms};
+    #local {__names} {};
+    #local cnt 0;
+	#local __id 0;
+	#foreach {*__rooms[%*]} {__id} {
+		#map get roomname {__name} {$__id};
+		#if {"$__name" == ""} {#echo {#$__id was empty name};#continue};
+		#if {$__names[$__name][count] >= 1} {
+            #if {$__names[$__name][count] == 1} {#map set roomname {{$__name}1} {$__names[$__name][id]};#math cnt {$cnt+1}};
+            #math {__names[$__name][count]} {$__names[$__name][count]+1};
+            #map set roomname {$__name$__names[$__name][count]} {$__id};
+            #math cnt {$cnt+1};
+        };
+		#else {
+            #local __names[$__name] {{id}{$__id}{count}{1}};
+		}
+	};
+	#unvar __rooms;
+	#unvar __name;
+    #echo {$cnt duplicated names has been changed.};
+}

@@ -1,10 +1,26 @@
-#var hp {{breath}{60};{ui}{0}}
-#tick {hp} {hp} {$hp[breath]}
+#var hp {{_interval}{60}}
 
-#alias {set_breath} {#if {"%1" == ""} {#untick hp;wk_log info {Stop breath is stopped auto-hp.};#return}; #var hp[breath] %1; #tick {hp} {hp} {$hp[breath]}}
-
-#act {^%s气血：%s%d/%s%d%s\(%d\%\)%s内力：%s%d%s/%s%d%s\(%d\%\)%s\(\+%d\)$} {#var hp[kee] %3;#var hp[kee_max] %5;#var hp[force] %10;#var hp[force_max] %13;#var hp[force_ex] %17;#if {$config[gag_hp] == 1} {#line gag}}
-#act {^%s精神：%s%d/%s%d%s\(%d\%\)%s法力：%s%d%s/%s%d%s\(%d\%\)%s\(\+%d\)$} {#var hp[sen] %3;#var hp[sen_max] %5;#var hp[spell] %10;#var hp[spell_max] %13;#var hp[spell_ex] %17;#if {$config[gag_hp] == 1} {#line gag}}
+#act {^%s气血：%s%d/%s%d%s\(%s%d\%\)%s内力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var hp[kee] %3;#var hp[kee_max] %5;#var hp[force] %11;#var hp[force_max] %14;#var hp[enforce] %19;#if {$config[gag_hp] == 1} {#line gag}}
+#act {^%s精神：%s%d/%s%d%s\(%s%d\%\)%s法力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var hp[sen] %3;#var hp[sen_max] %5;#var hp[mana] %11;#var hp[mana_max] %14;#var hp[enchant] %19;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s食物：%s%d/%s%d%s武学：%s%d%s$} {#var hp[food] %3;#var hp[food_max] %5;#var hp[wx] %8;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s饮水：%s%d/%s%d%s道行：%s%+%s$} {#var hp[water] %3;#var hp[water_max] %5;#var hp[dh] %8;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s潜能：%s%d%s杀气：%s%d%s$} {#var hp[potential] %3;#var hp[sq] %6;#if {$config[gag_hp] == 1} {#line gag}}
+
+#func {hp_draw}{
+	#format result {气血：%d/%d | 精神：%d/%d | 内力：%d/%d (+%d) | 法力：%d/%d (+%d) | 食物：%d/%d | 饮水：%d/%d} 
+	{$hp[kee]} {$hp[kee_max]} {$hp[sen]} {$hp[sen_max]} {$hp[force]} {$hp[force_max]} {$hp[enforce]} {$hp[mana]} {$hp[mana_max]} {$hp[enchant]}
+	{$hp[food]} {$hp[food_max]} {$hp[water]} {$hp[water_max]};
+}
+#func {hp_ex}{
+	#format result {潜能：%d | 杀气：%d | 道行：%s} {$hp[potential]} {$hp[sq]} {$hp[dh]};
+}
+#alias {hp_auto} {
+	#if {"%1" == ""} {#untick {hp};#var config[gag_hp] 0;#echo {Stopped auto refresh hp};#return};
+	#if {%1 < 1} {#var hp[_interval] 1};
+	#else {#var hp[_interval] {%1}};
+	#tick {hp} {hp} {$hp[_interval]};
+	#echo {Started auto refresh hp per %1s};
+	#if {%2 == 1} {#var config[gag_hp] 1;#echo {Gag hp contents}};
+	#else {#var config[gag_hp] 0};
+}
+

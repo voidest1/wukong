@@ -1,7 +1,8 @@
-#READ {./lib/config}
-#READ {./lib/common}
+#READ {./src/lib/config}
+#READ {./src/lib/common}
 
 #CONFIG {CHARSET} {GBK-1}
+#CONFIG {LOG MODE} {plain}
 
 #PATHDIR {d} {u} {32}
 #PATHDIR {e} {w} {2}
@@ -29,15 +30,31 @@
 #PATHDIR {zuo mufa} {out} {54}
 #PATHDIR {dive} {u} {55}
 
-#ACTION {^>%s$} {#if {$config[gag_blank] == 1} {#line gag}}
+#ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {2}
+#gag {^$}
 
-#SESSION xyj xiyouji.org 6666;gb;no;
-
-#act {终端机型态设定为 TINTIN++。}{
-	wk_require hp;
+#act {终端机型态设定为 TINTIN++。} {
+	wk_require data;
 	wk_require ui;
-	#unact {终端机型态设定为 TINTIN++。};
+	wk_require chat;
+	wk_require hp;
+	wk_require map;
+	wk_require skills;
+	wk_require kill;
+
+	#line quiet {#class data read {./data/$user[id].dat}};
 	#line gag;
-	#delay {1} {#echo {---- Welcome to 悟空v1.0 for 西游记(MUD) ----}};
+	#unact {终端机型态设定为 TINTIN++。};
+    #delay {0.1} {#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----}};
 }
+#event {SESSION CONNECTED} {
+	#screen save label;
+	#screen set label {$user[name]<$user[id]>};
+}
+#event {SESSION DEACTIVATED} {
+	#screen load label;
+	#class data write {./data/$user[id].dat}
+}
+#alias {debug} {#class {%1} kill;#class {%1} read {./src/c/%1}}
+#SESSION xyj xiyouji.org 6666;gb;no;
 
