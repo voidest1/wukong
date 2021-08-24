@@ -39,30 +39,42 @@
 
 #alias {scout} {
 	#if {"%2" == ""} {#echo {Syntax: scout <keyword> <area> [<who>]};#return};
-    #var __searching 1;
-    #map list {roomarea} {%2} {variable} {__rooms};
-    #map get roomvnum __current;
-    #list {__rooms} size __count;
-    #if {$__count == 0} {#echo {No room in area %2};#unvar __searching;#return};
-    #act {%1} {#unevent {END OF RUN};#path stop;#unact {%1};#bell;#echo {Found %1 here in $inroom[cname]};ui_message {[scout]: %1 in $inroom[cname]};#if {"%3" != ""} {tell %3 %1 in $inroom[cname]}} {1};
-    #var __n 1;
-    #if {$__current == *__rooms[+$__n]} {#math __n {$__n+1}};
-    #map get roomname {__name} *__rooms[+$__n];
-    #map find $__name;
-    #path run {0.5};
+	#var rooms {};
+	#var index 1;
+    #map list {roomarea} {%2} {variable} {rooms};
+    #if {&rooms[] == 0} {ui_message {No room in area %2};#return};
+	#if {*rooms[+$index] == $inroom[map][vnum]} {#math index {$index + 1}};
+    #act {%1} {
+		#unevent {END OF RUN};
+		#unvar rooms;
+		#unvar index;
+		#path stop;
+		#unact {%1};
+		#bell;
+		#local s {[scouter]: %1 in $inroom[cname] of %2};
+		ui_message {$s};
+		#if {"%3" != ""} {tell %3 $s};
+	} {1};
+	
+	#local next {};
+	#map get roomname {next} *rooms[+$index];
+	#echo $next;
+	#map find $next;
+	#path run {0.5}; 
     #event {END OF RUN} {
-        #math __n {$__n+1};
-        #if {$__current == *__rooms[+$__n]} {#math __n {$__n+1}};
-        #if {$__n > $__count} {
-            #unvar __searching;
+        #math index {$index + 1};
+        #if {$index > &rooms[]} {
             #unact {%1};
             #unevent {END OF RUN};
-            #nop here is completed search;
-            #echo {Searched $__count rooms, completed.};
+			#local s {[scouter]: %1 not in %2};
+            ui_message {$s};
+			#if {"%3" != ""} {tell %3 $s};
+			#unvar rooms;
+			#unvar index;
             #return;
         };
-        #map get {roomname} {__name} *__rooms[+$__n];
-        #map find $__name;
+        #map get {roomname} {next} *rooms[+$index];
+        #map find $next;
         #path run {0.5};
     };
 }
@@ -100,7 +112,7 @@
 		#map get roomname {__name} {$__id};
 		#if {"$__name" == ""} {#echo {#$__id was empty name};#continue};
 		#if {$__names[$__name][count] >= 1} {
-            #if {$__names[$__name][count] == 1} {#map set roomname {{$__name}1} {$__names[$__name][id]};#math cnt {$cnt+1}};
+            #if {$__names[$__name][count] == 1} {#map set roomname {$__name$__names[$__name][count]} {$__names[$__name][id]};#math cnt {$cnt+1}};
             #math {__names[$__name][count]} {$__names[$__name][count]+1};
             #map set roomname {$__name$__names[$__name][count]} {$__id};
             #math cnt {$cnt+1};
