@@ -42,6 +42,7 @@
 	wk_require skills;
 	wk_require kill;
 
+	#var user[passwd] {***};
 	#line quiet {#class data read {./data/$user[id].dat}};
 	#line gag;
 	#unact {终端机型态设定为 TINTIN++。};

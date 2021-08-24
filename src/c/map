@@ -58,7 +58,6 @@
 	
 	#local next {};
 	#map get roomname {next} *rooms[+$index];
-	#echo $next;
 	#map find $next;
 	#path run {0.5}; 
     #event {END OF RUN} {

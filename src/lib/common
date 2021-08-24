@@ -10,7 +10,7 @@
      {
           #if {$config[logging] != 1}
           {
-               #format {logfile} {log/$user-%t.log} {%Y-%m-%d};
+               #format {logfile} {log/$user[id]-%t.log} {%Y-%m-%d};
                #log append $logfile;
                #variable config[logging] 1
           };
