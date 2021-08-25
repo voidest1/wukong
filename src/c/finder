@@ -1,13 +1,1 @@
-#act {^%1告诉你：%2(%3) in %4 tell %5$} {
-	#switch {"%4"} {
-		#case "方寸山" {#var area fangcun};
-		#case "长安城" {#var area changan};
-		#case "长安城西" {#var area {changan-west}};
-		#case "普陀山" {#var area putuo};
-		#case "开封城" {#var area kaifeng};
-		#case "高老庄" {#var area gao};
-		#case "龙宫" {#var area longong;g longgong;#delay {60} {scout {%2} $area {%5}};#return};
-		#default {tell %5 %2(%3) in %4, I cannot found it;#return};
-	};
-		scout {%2} $area {%5};
-}
+#act {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} {scout {%2} {%5} {%6}}

@@ -15,19 +15,20 @@
 	#alias {ak} {ask $kill[ask][ename] about $kill[type]};
 	ui_message {Started %0};
 }
-
-#act {^$kill[ask][cname]对你说道：近有%1(%2)在%3为非作歹，请速去降服！$} {
+#alias {kill.bodyguard} {#var kill[bodyguard][ename] %1;#var kill[bodyguard][cname] %2}
+#act {^{$kill[ask][cname]}对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
 	#untick {an};
 	#format ename {%l} {%2}; 
 	#var kill[monster] {{cname}{%1}{ename}{$ename}{carea}{%3}{earea}{@map_area_c2e{%3}}};
 	d;s;
 	#unvar ename;
 	#local s {Kill $kill[monster][cname]($kill[monster][ename]) in $kill[monster][carea]($kill[monster][earea])};
-	ui_message $s;
-	#if {"$kill[bodyguard]" != ""} {tell $kill[bodyguard] $s};
-	#if {"$kill[scouter]" != ""} {tell $kill[scouter] $s};
+	ui_message {$s};
+	#if {"$kill[bodyguard]" != ""} {tell $kill[bodyguard][ename] $s};
+	#if {"$kill[scouter]" != ""} {tell $kill[scouter][ename] $s tell $kill[bodyguard][ename]};
 }
-#act {^$kill[bodyguard][cname]将$kill[monster][cname]从背上放了下来，躺在地上。$} {follow $kill[monster][ename];kill $kill[monster][ename]}
+#act {^{$kill[bodyguard][cname]}将{$kill[monster][cname]}从背上放了下来，躺在地上。$} {k}
 #act {^李靖对手中照妖镜一看，说：这位%1,妖魔已除尽,不妨先去歇息。$} {#tick {an} {ask $kill[ask][ename] about $kill[type]} {30}}
 #alias {ds} {decode shu}
-#act {从天上徐徐飘下几页天书，落入你的怀中。} {g $kill[ask][room];ak}
+#alias {k} {follow $kill[monster][ename];kill $kill[monster][ename]}
+#act {从天上徐徐飘下几页天书，落入你的怀中。} {g $kill[ask][room];#delay {3} {ak}}

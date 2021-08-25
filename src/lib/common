@@ -36,4 +36,4 @@
           #showme Turn logging on or off?
      }
 }
-#var config {{ui}{0}{panel_cols}{50}{game_cols}{80}{logging}{0}}
+#var config {{ui}{0}{panel_cols}{50}{game_cols}{100}{logging}{0}}
