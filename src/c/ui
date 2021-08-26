@@ -2,20 +2,17 @@
 #screen get rows {config[rows]}
 #var messages {}
 #event {SCREEN RESIZE} {#var config[rows] %0;#var config[cols] %1;ui r}
-#var panel {}
 #alias {ui} {
 	#if {"%1" != "r"} {
-		#math {config[ui]} {($config[ui] + 1) % 2};
+		#math config[ui] {($config[ui] + 1) % 2};
 	};
 	#if {$config[ui] == 0} {
 		#split;
 		map;
 	};
 	#else {
-		#math panel[top] 1;
-		#math panel[left] {$config[game_cols] - $config[cols] + 1};
-		#math panel[right] {$config[game_cols] + $config[panel_cols] - $config[cols] + 2};
-		#math panel[bottom] {$config[rows] - 4};
+		#math config[panel_left] {$config[game_cols] - $config[cols] + 1}; 
+		#math config[map_rows] {($config[rows] - 4) / 3};
 		#split 0 3 0  {$config[cols] - $config[game_cols]};
 		map 1;
 		ui_show_messages;
@@ -27,21 +24,19 @@
 	ui_show_messages;
 }
 #alias {ui_show_messages}{
-	#local __top 0;
-	#local __rows 0;
-	#math __top {$config[panel_cols] / 2 + 3};
-	#math __rows {$panel[bottom] - $__top};
-	#screen clear square {$__top} {$panel[left]} {$panel[bottom]} {-1};
-	#draw cyan rounded box {$__top} {$panel[left] + 1} {$panel[bottom]} {-1} $messages[-$__rows..-1];
+	#local rows {$config[rows]  - $config[map_rows] - 9};
+	#screen clear square {$config[map_rows] + 3} {$config[panel_left]} {$config[map_rows] + 5 + $rows} {-1};
+	#draw cyan rounded box {$config[map_rows] + 3} {$config[panel_left]} {$config[map_rows] + 5 + $rows} {-1} $messages[-$rows..-1];
 }
 #tick {ui_draw} {
 	#if {$config[ui] != 1} {#return};
 	#screen clear square {-3} {2} {-3} {$config[cols] - 3};
 	#show {@hp_draw{}} {-3} {2};
-	#screen clear square {$config[panel_cols] / 2 + 2} {$panel[left] + 1} {$config[panel_cols] / 2 + 2} {-1};
-	#show {@hp_ex{}} {$config[panel_cols] / 2 + 2} {$panel[left] + 1};
-	#screen clear square {$config[panel_cols] / 2 + 1} {$panel[left]} {$config[panel_cols] / 2 + 1} {-1};
-	#show {@map_draw{}} {$config[panel_cols] / 2 + 1} {$config[game_cols] - $config[cols] + 1};
+
+	#screen clear square {$config[map_rows]} {$config[panel_left]} {$config[map_rows]+2} {-1};
+	#show {@map_draw{}} {$config[map_rows]} {$config[panel_left]};
+	#show {@hp_ex{}} {$config[map_rows] + 1} {$config[panel_left]};
+	#show {@hp_dh{}} {$config[map_rows] + 2} {$config[panel_left]};
 } {0.5}
 
 #macro {\cu} {#buffer up {$config[cols] - 3}}

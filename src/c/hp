@@ -6,8 +6,9 @@
 	{$user[food]} {$user[food_max]} {$user[water]} {$user[water_max]};
 }
 #func {hp_ex}{
-	#format result {潜能：%d | 杀气：%d | 道行：%s} {$user[potential]} {$user[sq]} {$user[dh]};
+	#format result {潜能：%d | 杀气：%d} {$user[potential]} {$user[sq]};
 }
+#func {hp_dh} {#format result {道行：%s} {$user[dh]}}
 #alias {hp_auto} {
 	#if {"%1" == ""} {#untick {hp};#var config[gag_hp] 0;#echo {Stopped auto refresh hp};#return};
 	#if {%1 < 1} {#var hp[_interval] 1};
