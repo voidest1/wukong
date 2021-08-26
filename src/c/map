@@ -17,6 +17,8 @@
 	#line quiet {#map destroy world};
 	#map read {./map/xyj.map};
 	#map goto 1;
+	#map flag nofollow off;
+	#map flag static on;
 	#map offset 1 {$config[game_cols] - $config[cols] + 1} {$config[panel_cols] / 2} {-1};
 	#if {$config[ui] != 1} {#map flag vtmap};
 	#echo {Switch on to map};
