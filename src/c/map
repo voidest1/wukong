@@ -1,6 +1,7 @@
 #var inroom {}
 #act {^%P%S%P - %P$} {
 	#var inroom[cname] %2;
+	#if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to Îò¿Õv0.0.1 for Î÷ÓÎ¼Ç(MUD) ----};#unvar init}
 	#if {$edit[name] != 1} {#return};
 	#if {"$inroom[cname]" != "$inroom[map][name]"} {#map set roomname $inroom[cname];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[cname]};#var inroom[map][name] $inroom[cname];#bell;};
 }

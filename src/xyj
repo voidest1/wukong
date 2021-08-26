@@ -96,7 +96,7 @@
 #act {终端机型态设定为 TINTIN++。} {
 	#line gag;
 	#unact {终端机型态设定为 TINTIN++。};
-    #delay {0.1} {#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----}};
+	#var init 1;
 	i;score;hp;look;
 	
 	#screen save label;
