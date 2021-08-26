@@ -14,11 +14,11 @@ CROOMS <178>
 CSYMBOLS <128>
 CUSER <258>
 
-F 8271
+F 8207
 
 G 0
 
-I 1
+I 345
 
 L {ASCII NESW LINE} {NO EXITS} {x}
 L {ASCII NESW LINE} {N} {o}
@@ -246,20 +246,23 @@ L {UNICODE GRAPHICS} {ROOM R} {]}
 L {UNICODE GRAPHICS} {ROOM R CURVED} {)}
 
 
+LM {changan} {1} {} {}
 LM {changan-west} {139} {} {}
 LM {cross} {1} {} {}
 LM {donghai} {108} {} {}
 LM {fangcun} {329} {} {}
 LM {gao} {300} {} {}
-LM {kaifeng} {212} {} {}
+LM {kaifeng} {216} {} {}
 LM {lijing} {513} {} {}
+LM {lingtai} {345} {} {}
 LM {longgong} {383} {} {}
 LM {lxbd} {527} {} {}
 LM {moon} {159} {} {}
 LM {nanhai} {105} {} {}
 LM {nantianmen} {443} {} {}
-LM {putuo} {359} {} {}
+LM {putuo} {363} {} {}
 LM {safe} {35} {} {}
+LM {sky} {443} {} {}
 LM {zizhulin} {380} {} {}
 
 
