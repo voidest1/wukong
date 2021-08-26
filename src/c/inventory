@@ -1,0 +1,4 @@
+#act {~%0} {
+	#echo {hi: %0};
+	#regexp {%0} {¹ð»¨¾Æ´ü(Jiudai)} {#echo true} {#class inventory kill}
+}
