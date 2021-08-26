@@ -51,7 +51,7 @@
 #PATHDIR {dive} {u} {55}
 
 #list lines create
-#ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {2}
+#ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {4}
 #gag {^$}
 #alias {wk_log} {#var __color {<169>};#switch {"%1"} {#case "warn" {#var __color {<139>}};#case "error" {#var __color {<119>}}};#echo {%s%t.%u. %s<099>} {$__color} {[%Y-%m-%d %H:%M:%S]} {%1} {%2};#unvar __color}
 
