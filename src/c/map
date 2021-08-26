@@ -2,6 +2,7 @@
 #act {^%P%S%P - %P$} {
 	#var inroom[cname] %2;
 	#if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
+	#if {"%2" == "荡悠悠三更梦"} {map_pos dream};
 	#if {$edit[name] != 1} {#return};
 	#if {"$inroom[cname]" != "$inroom[map][name]"} {#map set roomname $inroom[cname];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[cname]};#var inroom[map][name] $inroom[cname];#bell;};
 }
@@ -16,7 +17,6 @@
 	#line quiet {#map destroy world};
 	#map read {./map/xyj.map};
 	#map goto 1;
-	#map flag nofollow;
 	#map offset 1 {$config[game_cols] - $config[cols] + 1} {$config[panel_cols] / 2} {-1};
 	#if {$config[ui] != 1} {#map flag vtmap};
 	#echo {Switch on to map};
@@ -132,5 +132,7 @@
 	#act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
 	#delay {3} {#unact {^到了！你按下云头跳了下来。$}};
 }
+#act {^警幻仙姑说道：又是一根木头...好，你这就去吧。$} {map_pos $bed;#unvar bed}
+#alias sleep {#var bed $inroom[map][vnum];#send sleep %0}
 #act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
 #act {^你的动作还没有完成，不能移动。$} {#map undo}

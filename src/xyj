@@ -49,6 +49,8 @@
 #PATHDIR {swim} {swim} {53}
 #PATHDIR {zuo mufa} {out} {54}
 #PATHDIR {dive} {u} {55}
+#PATHDIR {backyard} {frontyard} {56}
+#PATHDIR {frontyard} {backyard} {57}
 
 #list lines create
 #ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {4}
