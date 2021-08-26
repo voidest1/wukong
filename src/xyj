@@ -1,8 +1,28 @@
-#READ {./src/lib/config}
-#READ {./src/lib/common}
-
+#CONFIG {AUTO TAB} {5000}
+#CONFIG {BUFFER SIZE} {10000}
 #CONFIG {CHARSET} {GBK-1}
-#CONFIG {LOG MODE} {plain}
+#CONFIG {COLOR MODE} {TRUE}
+#CONFIG {COLOR PATCH} {OFF}
+#CONFIG {COMMAND COLOR} {\e[0;37m}
+#CONFIG {COMMAND ECHO} {ON}
+#CONFIG {CONNECT RETRY} {0.0}
+#CONFIG {HISTORY SIZE} {1000}
+#CONFIG {LOG MODE} {PLAIN}
+#CONFIG {MOUSE} {OFF}
+#CONFIG {PACKET PATCH} {AUTO TELNET}
+#CONFIG {RANDOM SEED} {2168716967}
+#CONFIG {REPEAT CHAR} {!}
+#CONFIG {REPEAT ENTER} {OFF}
+#CONFIG {SCREEN READER} {OFF}
+#CONFIG {SCROLL LOCK} {ON}
+#CONFIG {SPEEDWALK} {OFF}
+#CONFIG {TAB WIDTH} {8}
+#CONFIG {TELNET} {ON}
+#CONFIG {TINTIN CHAR} {#}
+#CONFIG {VERBATIM} {OFF}
+#CONFIG {VERBATIM CHAR} {\}
+#CONFIG {VERBOSE} {OFF}
+#CONFIG {WORDWRAP} {ON}
 
 #PATHDIR {d} {u} {32}
 #PATHDIR {e} {w} {2}
@@ -30,32 +50,73 @@
 #PATHDIR {zuo mufa} {out} {54}
 #PATHDIR {dive} {u} {55}
 
+#list lines create
 #ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {2}
 #gag {^$}
+#alias {wk_log} {#var __color {<169>};#switch {"%1"} {#case "warn" {#var __color {<139>}};#case "error" {#var __color {<119>}}};#echo {%s%t.%u. %s<099>} {$__color} {[%Y-%m-%d %H:%M:%S]} {%1} {%2};#unvar __color}
+
+#alias {wk_require} {#if {"%1" == ""} {wk_log {warn} {No specifical class name};#return}; #class {%1} read {./src/c/%1}}
+#alias {wk_destroy} {#if {"%1" == ""} {wk_log {warn} {No specifical class name};#return}; #class {%1} kill}
+#alias {wk_config} {#var config[%1] {%2}}
+#ALIAS {log}
+{
+     #if {"%0" == "on"}
+     {
+          #if {$config[logging] != 1}
+          {
+               #format {logfile} {log/$user[id]-%t.log} {%Y-%m-%d};
+               #log append $logfile;
+               #variable config[logging] 1
+          };
+          #else
+          {
+               #showme You are already logging.
+          }
+     };
+     #elseif {"%0" == "off"}
+     {
+          #if {$config[logging] == 1}
+          {
+               #log off;
+               #variable config[logging] 0
+          };
+          #else
+          {
+               #showme You are not logging.
+          }
+     };
+     #else
+     {
+          #showme Turn logging on or off?
+     }
+}
+#func capital {#format result {%n} {%0}}
+#var config {{ui}{0}{panel_cols}{50}{game_cols}{100}{logging}{0}}
 
 #act {终端机型态设定为 TINTIN++。} {
-	wk_require data;
-	wk_require ui;
-	wk_require chat;
-	wk_require hp;
-	wk_require map;
-	wk_require skills;
-	wk_require kill;
-
-	#var user[passwd] {***};
-	#line quiet {#class data read {./data/$user[id].dat}};
 	#line gag;
 	#unact {终端机型态设定为 TINTIN++。};
     #delay {0.1} {#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----}};
-}
-#event {SESSION CONNECTED} {
+	i;score;hp;look;
+	
 	#screen save label;
 	#screen set label {$user[name]<$user[id]>};
+}
+#event {SESSION CONNECTED} {
+    wk_require data;
+	wk_require user;
+    wk_require ui;
+    wk_require hp;
+    wk_require map;
+    wk_require kill;
+	#line quiet {#class data read {./data/$user[id].dat}};
 }
 #event {SESSION DEACTIVATED} {
 	#screen load label;
 	#class data write {./data/$user[id].dat}
 }
 #alias {debug} {#class {%1} kill;#class {%1} read {./src/c/%1}}
-#SESSION xyj xiyouji.org 6666;gb;no;
-
+#SESSION xyj xiyouji.org 6666
+gb;no;
+#if {"$id" != ""} {$id;#var user[id] $id;#unvar id}
+#if {"$pass" != ""} {$pass;#unvar pass}

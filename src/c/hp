@@ -1,18 +1,12 @@
 #var hp {{_interval}{60}}
 
-#act {^%s气血：%s%d/%s%d%s\(%s%d\%\)%s内力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var hp[kee] %3;#var hp[kee_max] %5;#var hp[force] %11;#var hp[force_max] %14;#var hp[enforce] %19;#if {$config[gag_hp] == 1} {#line gag}}
-#act {^%s精神：%s%d/%s%d%s\(%s%d\%\)%s法力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var hp[sen] %3;#var hp[sen_max] %5;#var hp[mana] %11;#var hp[mana_max] %14;#var hp[enchant] %19;#if {$config[gag_hp] == 1} {#line gag}}
-#act {^%s食物：%s%d/%s%d%s武学：%s%d%s$} {#var hp[food] %3;#var hp[food_max] %5;#var hp[wx] %8;#if {$config[gag_hp] == 1} {#line gag}}
-#act {^%s饮水：%s%d/%s%d%s道行：%s%+%s$} {#var hp[water] %3;#var hp[water_max] %5;#var hp[dh] %8;#if {$config[gag_hp] == 1} {#line gag}}
-#act {^%s潜能：%s%d%s杀气：%s%d%s$} {#var hp[potential] %3;#var hp[sq] %6;#if {$config[gag_hp] == 1} {#line gag}}
-
 #func {hp_draw}{
 	#format result {气血：%d/%d | 精神：%d/%d | 内力：%d/%d (+%d) | 法力：%d/%d (+%d) | 食物：%d/%d | 饮水：%d/%d} 
-	{$hp[kee]} {$hp[kee_max]} {$hp[sen]} {$hp[sen_max]} {$hp[force]} {$hp[force_max]} {$hp[enforce]} {$hp[mana]} {$hp[mana_max]} {$hp[enchant]}
-	{$hp[food]} {$hp[food_max]} {$hp[water]} {$hp[water_max]};
+	{$user[kee]} {$user[kee_max]} {$user[sen]} {$user[sen_max]} {$user[force]} {$user[force_max]} {$user[enforce]} {$user[mana]} {$user[mana_max]} {$user[enchant]}
+	{$user[food]} {$user[food_max]} {$user[water]} {$user[water_max]};
 }
 #func {hp_ex}{
-	#format result {潜能：%d | 杀气：%d | 道行：%s} {$hp[potential]} {$hp[sq]} {$hp[dh]};
+	#format result {潜能：%d | 杀气：%d | 道行：%s} {$user[potential]} {$user[sq]} {$user[dh]};
 }
 #alias {hp_auto} {
 	#if {"%1" == ""} {#untick {hp};#var config[gag_hp] 0;#echo {Stopped auto refresh hp};#return};

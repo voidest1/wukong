@@ -1,3 +1,0 @@
-#var skills {}
-#act {^£ü%+2a%S%+1s(%S)%s-%s%S%s%d/%s%d£ü$} {#var skills[%4] {{id}{%4}{name}{%2}{level}{%9}{exp}{%11}{enable}{0}};#if {"%1" == "¡õ"} {#var skills[%4][enable] 1}}
-
