@@ -1,4 +1,3 @@
 #act {~%0} {
-	#echo {hi: %0};
-	#regexp {%0} {¹ð»¨¾Æ´ü(Jiudai)} {#echo true} {#class inventory kill}
-}
+	#regexp {%0} {>} {#class inventory kill} {#regexp {%0} {{  |¡õ}%S(%S)} {#var user[inventory][{&3}] {{name}{&2}{enable}{0}};#if {"%1" == "¡õ"} {#var user[inventory][&3][enable] 1}}}
+} {1}
