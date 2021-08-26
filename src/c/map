@@ -93,6 +93,7 @@
 }
 #nop ####### Edit ######
 #var edit {{name}{0}}
+#alias {map.new} {#map dig %0 new}
 #alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};
 #alias {map.setname} {
 	#map set roomname $inroom[cname];
@@ -132,3 +133,4 @@
 	#delay {3} {#unact {^到了！你按下云头跳了下来。$}};
 }
 #act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
+#act {^你的动作还没有完成，不能移动。$} {#map undo}
