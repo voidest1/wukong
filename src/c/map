@@ -1,11 +1,15 @@
 #var inroom {}
 #act {^%P%S%P - %P$} {
 	#var inroom[cname] %2;
-	#if {$scout[run] == 1} {#math scout[gstep] {$scout[gstep] + 1};#if {$scout[gstep] == $scout[mstep]} {#path walk forward}};
+	#if {$scout[run] == 1} {#math scout[gstep] {$scout[gstep] + 1};#if {$scout[gstep] == $scout[mstep] && $scout[gstep] == $scout[rstep]} {#delay {0.1} {#math scout[mstep] {$scout[mstep] + 1};#path walk forward}}};
 	#if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
 	#if {"%2" == "荡悠悠三更梦"} {map_pos dream};
 	#if {$edit[name] != 1} {#return};
 	#if {"$inroom[cname]" != "$inroom[map][name]"} {#map set roomname $inroom[cname];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[cname]};#var inroom[map][name] $inroom[cname];#bell;};
+}
+#event {MAP ENTER ROOM} {
+	#if {$scout[run] == 1} {#math scout[rstep] {$scout[rstep] + 1}};
+	#map get all {inroom[map]} {%0};
 }
 #act {^%1一把抓住了你！$} {#line quiet {#map undo;scout.stop;#bell}}
 #act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {#line quiet {#map undo;#path stop;#bell}}
@@ -26,10 +30,6 @@
 	#echo {Switch on to map};
 }
 #alias {map_style} {#map flag asciigraphics}
-#event {MAP ENTER ROOM} {
-	#if {$scout[run] == 1} {#math scout[mstep] {$scout[mstep] + 1}};
-	#map get all {inroom[map]} {%0};
-}
 #func {map_draw} {
 	#local __color {<099>};
 	#if {"$inroom[cname]" != "$inroom[map][name]"} {
@@ -47,42 +47,40 @@
 	#if {"%2" == ""} {#echo {Syntax: scout <keyword> <area> [<who>]};#return};
 	#if {$scout[run] == 1} {#echo {You are still in scouting...};#bell;#return};
 	
-	#var scout {{run}{1}{mstep}{0}{gstep}{0}{target}{%1}{area}{%2}{notify}{%3}{rvnum}{0}{rtitle}{}{rooms}{}{index}{1}};
+	#var scout {{run}{1}{mstep}{0}{rstep}{0}{gstep}{0}{target}{%1}{area}{%2}{notify}{%3}{rvnum}{0}{rtitle}{}{rooms}{}{index}{1}};
     #map list {roomarea} {%2} {variable} {scout[rooms]};
     #if {&scout[rooms][] == 0} {ui_message {No room in area %2};#bell;#var scout[run] 0;#return};
 	#if {*scout[rooms][+$scout[index]] == $inroom[map][vnum]} {#math scout[index] {$scout[index] + 1}};
-    #act {%1} {
+    #act {$scout[target]} {
 		#var scout[rvnum] $inroom[map][vnum];
 		#var scout[rtitle] $inroom[map][name];
-		scout.stop;
+		#bell;
+		scout_stop;
 	} {1};
 	
-	#local next {};
-	#map get roomname {next} *scout[rooms][+$scout[index]];
-	#map find $next;
-	#path walk forward; 
-    #event {END OF RUN} {
+    scout_next;
+	#math scout[mstep] {$scout[mstep] + 1};
+	#path walk forward;
+	#event {END OF PATH} {
         #math scout[index] {$scout[index] + 1};
-        #if {$index > &scout[rooms][]} {
-            scout.stop;
+        #if {$scout[index] > &scout[rooms][]} {
+            scout_stop;
 			#return;
         };
-        #map get {roomname} {next} *scout[rooms][+$scout[index]];
-        #map find $next;
-        #path walk forward;
+		scout_next;
     };
 }
-#alias {scout.walk} {
+#alias {scout_next} {
 	#local next {};
 	#map get roomname {next} *scout[rooms][+$scout[index]];
 	#map find $next;
-	#path walk
 }
-#alias {scout.stop} {
+#alias {scout_stop} {
 	#if {$scout[run] != 1} {#echo {The scouting is already stop};#return};
-	#line quiet {#path stop};
+	#var scout[run] 0;
+	#path destroy;
 	#unact {$scout[target]};
-	#unevent {END OF RUN};
+	#unevent {END OF PATH};
 	#if {"$scout[rtitle]" == ""} {#local s {[scouter]: $scout[target] not in $scout[area]}};
 	#else {#local s {[scouter]: $scout[target] is in $scout[rtitle]($scout[rvnum]) of $scout[area]}};
 	ui_message {$s};
