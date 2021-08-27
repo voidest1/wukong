@@ -1,4 +1,4 @@
-#var kill {{type}{}{scouter}{{ename}{}{cname}{}}{bodyguard}{{ename}{}{cname}{}}};
+#var kill {{type}{}{scouter}{{ename}{}{cname}{}}{bodyguard}{{ename}{}{cname}{}}}{fly}{0};
 
 #alias {kill.start} {
 	#if {"%0" == "kill"} {
@@ -20,15 +20,15 @@
 	#untick {an};
 	#format ename {%l} {%2}; 
 	#var kill[monster] {{cname}{%1}{ename}{$ename}{carea}{%3}{earea}{@map_area_c2e{%3}}};
-	d;s;
 	#unvar ename;
 	#local s {Kill $kill[monster][cname]($kill[monster][ename]) in $kill[monster][carea]($kill[monster][earea])};
 	ui_message {$s};
 	#if {"$kill[bodyguard]" != ""} {tell $kill[bodyguard][ename] $s};
 	#if {"$kill[scouter]" != ""} {tell $kill[scouter][ename] $s tell $kill[bodyguard][ename]};
+	#if {$kill[fly] == 1} {g sky;#delay {15} {fly changan;g safe}};#else {d;s;s};
 }
 #act {^{$kill[bodyguard][cname]}将{$kill[monster][cname]}从背上放了下来，躺在地上。$} {k}
 #act {^李靖对手中照妖镜一看，说：这位%1,妖魔已除尽,不妨先去歇息。$} {#tick {an} {ask $kill[ask][ename] about $kill[type]} {30}}
 #alias {ds} {decode shu}
 #alias {k} {follow $kill[monster][ename];kill $kill[monster][ename]}
-#act {从天上徐徐飘下几页天书，落入你的怀中。} {g $kill[ask][room];#delay {3} {ak}}
+#act {从天上徐徐飘下几页天书，落入你的怀中。} {#if {kill[fly] == 1} {fly sky};g $kill[ask][room];#delay {10} {ak}}

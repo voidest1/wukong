@@ -22,10 +22,10 @@
 }
 
 #nop ------chat---------
-#act {^%1告诉你：%2} {ui_message {%0}} {9}
+#act {^%1告诉你：%2} {#if {"%2" == "come to kill"} {g kp;#delay {10} {k}};#else {ui_message {%0}}} {9}
 #act {^%1在你的耳边悄声说道：%2$} {ui_message {%0}}
 #act {^%1回答你：%2$} {ui_message {%0}}
 #act {^【队伍】%1：%2$} {ui_message {%0}}
 
 #nop -----scouter----------
-#act {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} {scout {%2} {%5} {%6}} {1}
+#act {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} {scout {%2(@capital{%3})} {%5} {%6}} {1}

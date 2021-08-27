@@ -8,6 +8,7 @@
 }
 #act {^%1一把抓住了你！$} {#line quiet {#map undo;#path stop;#bell}}
 #act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {#line quiet {#map undo;#path stop;#bell}}
+#act {^护宫卫士大喝一声：下去！你被扔回了下界。$} {map_pos 96;#bell}
 #alias {map} {
 	#if {"%1" == ""} {
 		#line quiet {#map destroy world};
@@ -84,11 +85,10 @@
 	#switch {"%0"} {
 		#case "长安城" {#return changan};
 		#case "长安城西" {#return changan-west};
-		#case "月宫" {#return moon};
 		#case "开封城" {#return kaifeng};
 		#case "高老庄" {#return gao};
 		#case "方寸山" {#return fangcun};
-		#case "龙宫" {#return longong};
+		#case "龙宫" {#return longgong};
 		#case "普陀山" {#return putuo};
 		#default {#return %0};
 	}
