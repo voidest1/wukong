@@ -39,5 +39,7 @@
 	#show {@hp_dh{}} {$config[map_rows] + 2} {$config[panel_left]};
 } {0.5}
 
-#macro {\cu} {#buffer up {$config[cols] - 3}}
-#macro {\cn} {#buffer down {$config[cols] - 3}}
+#macro {\cb} {#buffer up {$config[cols] - 3}}
+#macro {\cf} {#buffer down {$config[cols] - 3}}
+#macro {\cy} {#buffer up {1}}
+#macro {\ce} {#buffer down {1}}
