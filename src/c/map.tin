@@ -25,6 +25,7 @@
 		#echo {Couldn't find destination %1};
 		#return;
 	};
+	#list map[rooms] clear;
 	#var map[dest] {%1};
 	#list map[rooms] add *dest[+1];
 	#var map[mode] 0;
@@ -58,6 +59,7 @@
     	#return;
     };
     #local id {0};
+    #list map[rooms] clear;
     #foreach {*rooms[%*]} {id}
     {
     	#list map[rooms] add {$id};
@@ -175,10 +177,16 @@
         #math map[g_step] {$map[g_step] + 1};
         #if {$map[mode] == 1}
         {
+        	#local delay {0.1};
+    		#if {$inroom[map][vnum] == 383} 
+    		{
+    			#echo Enter a special room, need to delay;
+    			#local delay {1.5};
+    		}
         	#nop 同步的模式;
             #if {$map[g_step] == $map[m_step] && $map[m_step] == $map[p_step]}
             {
-                #delay {0.1} {#math map[p_step] {$map[p_step] + 1};#path walk forward};
+                #delay {$delay} {#math map[p_step] {$map[p_step] + 1};#path walk forward};
             };
         };
         #elseif {$map[final_step] != 0 && $map[g_step] == $map[final_step]}
@@ -194,6 +202,7 @@
 }
 #event {MAP ENTER ROOM}
 {
+    #map get all {inroom[map]} {%0};
     #if {$map[running] == 1}
     {
         #math map[m_step] {$map[m_step] + 1};
@@ -202,7 +211,6 @@
         	#delay {0.2} {#path walk forward};
         };
     };
-    #map get all {inroom[map]} {%0};
 }
 
 #act {^%1一把抓住了你！$} {map.abort}
@@ -234,7 +242,7 @@
 	#format {result} {%s - %s%s<099> #%s@%s} {$inroom[cname]} {$__color} {$inroom[map][name]} {$inroom[map][vnum]} {$inroom[map][area]}
 }
 #alias {map_pos} {
-	#if {"%1" == ""} {#echo {Syntax: map_pos <room name>|<room evnum>|<exits>};#return};
+	#if {"%1" == ""} {#echo {Syntax: map_pos <room name>|<room vnum>|<exits>};#return};
 	#map goto {%1};
 }
 
