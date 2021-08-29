@@ -18,7 +18,7 @@
 #act {^你身上带着下列这些东西(负重%s%d%)：$} {
 	#var user[weight] {%2};
 	#var user[inventory] {};
-	#class inventory read {./src/c/inventory}
+	#class inventory read {./src/c/inventory.tin}
 }
 
 #nop ------chat---------

@@ -110,9 +110,15 @@
     	#unact {$map[keyword]};
     };
     #echo {Finish this running};
+    #if {"$map[guard]" != ""}
+    {
+    	tell $map[guard] $map[keyword] in $map[pos][name]($map[pos][vnum]) of $map[dest];
+    	#var map[guard] {};
+    };
     #if {"$map[after]" != ""}
     {
         $map[after];
+        #var map[after] {};
     };
 }
 
@@ -243,7 +249,7 @@
 		#default {#return %0};
 	}
 }
-#nop ####### Edit ######
+#nop ####### Edit ######;
 #var edit {{name}{0}}
 #alias {map.new} {#map dig %0 new}
 #alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};

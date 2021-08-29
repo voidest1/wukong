@@ -1,0 +1,1 @@
+#ACTION {^%1¸æËßÄã£ºKill %2(%3) in %4(%5) tell %6$} {#var map[guard] %6;scout {%2(@capital{%3})} %5} {1}
