@@ -89,6 +89,7 @@
 			#var map[rooms] {};
 			#path destroy;
 			#bell;
+			#unact {$map[keyword]};
 			map.reach;
     	} {1};
     };

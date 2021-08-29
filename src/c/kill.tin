@@ -1,35 +1,35 @@
-#var kill {{type}{}{scouter}{{ename}{}{cname}{}}{bodyguard}{{ename}{}{cname}{}}}{fly}{0};
-
+#var kill {{killing}{0}{fly}{0}{mobs}{0}}
+#alias {ak} {ask li jing about newkill}
+#alias {ds} {decode shu}
+#alias {k} {perform qianyan;#delay {6} {follow $kill[monster][ename];kill $kill[monster][ename]}}
+#alias {r} {#delay {1} {mingsi 200}};
+#act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;#if {$kill[killing] == 1} {dazuo 200}}};
+#act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;#if {$kill[killing] == 1} {fly sky;#delay {2} {g lijing ak}}}}
 #alias {kill.start} {
-	#if {"%0" == "kill"} {
-		#var kill[ask] {{ename}{yuan tiangang}{cname}{袁天罡}{room}{yuan}};
-	};
-	#elseif {"%0" == "newkill"} {
-		#var kill[ask] {{ename}{li jing}{cname}{李靖}{room}{lijing}};
-	};
-	#else {
-		#echo {Syntax: kill.start <kill>|<newkill>};
+	#if {"%3" == ""}
+	{
+		#echo {Syntax: kill.start <guard id> <guard name> <scouter id> [can fly]};
 		#return;
 	};
-	#var kill[type] %0;
-	#alias {ak} {ask $kill[ask][ename] about $kill[type]};
-	ui_message {Started %0};
+	#var kill[guard][ename] %1;
+	#var kill[guard][cname] %2;
+	#var kill[scouter][ename] %3;
+	#var kill[killing] 1;
+	#var kill[mobs] 0;
+	ui_message {开始灭妖(newkill)};
 }
-#alias {kill.bodyguard} {#var kill[bodyguard][ename] %1;#var kill[bodyguard][cname] %2}
-#act {^{$kill[ask][cname]}对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
+#act {^李靖对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
 	#untick {an};
 	#format ename {%l} {%2}; 
 	#var kill[monster] {{cname}{%1}{ename}{$ename}{carea}{%3}{earea}{@map_area_c2e{%3}}};
 	#unvar ename;
 	#local s {Kill $kill[monster][cname]($kill[monster][ename]) in $kill[monster][carea]($kill[monster][earea])};
 	ui_message {$s};
-	#if {"$kill[bodyguard]" != ""} {tell $kill[bodyguard][ename] $s};
-	#if {"$kill[scouter]" != ""} {tell $kill[scouter][ename] $s tell $kill[bodyguard][ename]};
-	#if {$kill[fly] == 1} {fly changan;#delay {2} {g safe}};#else {d;s;s};
+	#if {"$kill[guard]" != ""} {tell $kill[guard][ename] $s};
+	#if {"$kill[scouter]" != ""} {tell $kill[scouter][ename] $s tell $kill[guard][ename]};
+	#if {$kill[fly] == 1} {fly changan;#delay {2} {g safe {#echo {Don't forget decode shu};#bell}}};
+	#else {g kp};
 }
-#act {^{$kill[bodyguard][cname]}将{$kill[monster][cname]}从背上放了下来，躺在地上。$} {k}
-#act {^李靖对手中照妖镜一看，说：这位%1,妖魔已除尽,不妨先去歇息。$} {#tick {an} {ask $kill[ask][ename] about $kill[type]} {30}}
-#alias {ds} {decode shu}
-#alias {k} {perform qianyan;#delay {5} {follow $kill[monster][ename];kill $kill[monster][ename]}}
-#alias {r} {#delay {2} {mingsi 200;#delay {60} {exert refresh;dazuo 200;#delay {60} {fly sky;#delay {2} {g lijing;#delay {15} ak}}}}}
-#act {从天上徐徐飘下几页天书，落入你的怀中。} {#if {$kill[fly] == 1} {r};#else {g $kill[ask][room];#delay {10} {ak}}}
+#act {^{$kill[guard][cname]}将{$kill[monster][cname]}从背上放了下来，躺在地上。$} {k}
+#act {^李靖对手中照妖镜一看，说：这位%1,妖魔已除尽,不妨先去歇息。$} {#tick {an} {#if {#kill[killing] == 1} {ak}} {30}}
+#act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};#if {$kill[fly] == 1} {r};#else {g lijing {ak}}}
