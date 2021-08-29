@@ -97,6 +97,7 @@
     #var map[p_step] 0;
     #var map[m_step] 0;
     #var map[g_step] 0;
+    #var map[final_step] 0;
     #event {END OF PATH} {map.reach};
     map.reach;
 }
@@ -129,7 +130,15 @@
 {
     #if {&map[rooms][] == 0}
     {
-        map.stop;
+    	#nop mode = 0, 异步行走模式，要等游戏到达目的地才结束;
+    	#if {$map[mode] == 0}
+    	{
+    		#var map[final_step] $map[m_step];
+    	};
+    	#else
+    	{
+    		map.stop;
+    	};
         #return;
     };
     #nop 要求rooms里面保存的是vnum;
@@ -147,7 +156,7 @@
     #path walk forward;
 }
 
-#nop look输出的房间名称;
+#nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
     #var inroom[cname] %2;
@@ -155,14 +164,19 @@
     #if {$map[running]}
     {
         #math map[g_step] {$map[g_step] + 1};
-        #nop 同步的模式;
         #if {$map[mode] == 1}
         {
+        	#nop 同步的模式;
             #if {$map[g_step] == $map[m_step] && $map[m_step] == $map[p_step]}
             {
                 #delay {0.1} {#math map[p_step] {$map[p_step] + 1};#path walk forward};
             };
         };
+        #elseif {$map[final_step] != 0 && $map[g_step] == $map[final_step]}
+        {
+        	#nop 异步模式，当游戏到达终点时才调用stop;
+        	#delay {0.1} {map.stop};
+        }
     };
     #if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
     #if {"%2" == "荡悠悠三更梦"} {map_pos dream};
