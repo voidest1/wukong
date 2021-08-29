@@ -96,22 +96,22 @@
 #var config {{ui}{0}{panel_cols}{50}{game_cols}{100}{logging}{0}}
 
 #alias init {
-	#unact {^重新连线完毕。$};
+     #unact {^重新连线完毕。$};
 	#unact {终端机型态设定为 TINTIN++。};
-    #var init 1;
-    i;score;hp;look;
+     #var init 1;
+     i;score;hp;look;
 
-    #screen save label;
-    #screen set label {$user[id]};
+     #screen save label;
+     #screen set label {$user[id]};
 }
 #act {终端机型态设定为 TINTIN++。} {init}
 #act {^重新连线完毕。$} {init}
 #event {SESSION CONNECTED} {
-    wk_require data;
+     wk_require data;
 	wk_require user;
-    wk_require ui;
-    wk_require hp;
-    wk_require map;
+     wk_require ui;
+     wk_require hp;
+     wk_require map;
 	#line quiet {#class data read {./data/$user[id].dat}};
 }
 #event {SESSION DEACTIVATED} {

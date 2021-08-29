@@ -30,7 +30,6 @@
 	#var map[mode] 0;
 	map.run;
 }
-#loop 1 693 
 #alias {scout}
 {
 	#if {"%2" == ""} 
