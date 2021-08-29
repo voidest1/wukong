@@ -57,7 +57,7 @@
 #gag {^$}
 #alias {wk_log} {#var __color {<169>};#switch {"%1"} {#case "warn" {#var __color {<139>}};#case "error" {#var __color {<119>}}};#echo {%s%t.%u. %s<099>} {$__color} {[%Y-%m-%d %H:%M:%S]} {%1} {%2};#unvar __color}
 
-#alias {wk_require} {#if {"%1" == ""} {wk_log {warn} {No specifical class name};#return}; #class {%1} read {./src/c/%1}}
+#alias {wk_require} {#if {"%1" == ""} {wk_log {warn} {No specifical class name};#return}; #class {%1} read {./src/c/%1.tin}}
 #alias {wk_destroy} {#if {"%1" == ""} {wk_log {warn} {No specifical class name};#return}; #class {%1} kill}
 #alias {wk_config} {#var config[%1] {%2}}
 #ALIAS {log}
