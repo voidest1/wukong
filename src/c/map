@@ -152,8 +152,11 @@
         #return;
     };
     #map find $next;
-    #math map[p_step] {$map[p_step] + 1};
-    #path walk forward;
+    #if {$map[g_step] == $map[m_step] && $map[m_step] == $map[p_step]}
+    {
+    	#math map[p_step] {$map[p_step] + 1};
+    	#path walk forward;
+    };
 }
 
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
