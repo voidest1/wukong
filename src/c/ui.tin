@@ -18,9 +18,15 @@
 		ui_show_messages;
 	}
 }
+#alias {ui.send}
+{
+	#if {"%0" == ""} {#return};
+	#echo {%0};
+	ui_message %0;
+}
 #alias {ui_message} {
 	#if {"%0" == ""} {#return};
-	#list messages add %0;
+	#list messages add {%0};
 	ui_show_messages;
 }
 #alias {ui_show_messages}{

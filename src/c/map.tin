@@ -3,214 +3,48 @@
 
 #alias {g}
 {
-	#if {"%1" == ""}
-	{
-		#echo {Syntax: g <roomname|roomid> [after command]};
-		#return;
-	};
-	#if {$map[running] == 1}
+	#if {&{walk} != 0}
     {
         #echo {You are in running already};
         #return;
     };
-    #var map[after] {};
-	#if {"%2" != ""}
-	{
-		#var map[after] %2;
-	};
-	#local dest {};
-	#map list {roomname} {%1} {variable} {dest};
-	#if {&dest[] == 0}
-	{
-		#echo {Couldn't find destination %1};
-		#return;
-	};
-	#list map[rooms] clear;
-	#var map[dest] {%1};
-	#list map[rooms] add *dest[+1];
-	#var map[mode] 0;
-	map.run;
+    wk_require walk;
+    walk.start roomname {%1};
 }
 #alias {scout}
 {
 	#if {"%2" == ""} 
 	{
-		#echo {Syntax: scout <keyword> <area> [<after command>]};
+		#echo {Syntax: scout <keyword> <area> [<reciever>]};
 		#return;
 	};
-	#if {$map[running] == 1} 
+	#if {&{walk} != 0} 
 	{
 		#echo {You are in running already};
 		#return
 	};
-	#var map[keyword] %1;
-	#var map[dest] %2;
-	#var map[after] {};
+	wk_require walk;
+	#var walk[mode] 1;
+	#var walk[keyword] {%1};
 	#if {"%3" != ""}
 	{
-		#var map[after] {%3};
+		#list walk[recievers] add {%3};
 	};
-	#var map[pos] {{vnum}{0}{name}{}};
-	#local rooms {};
-    #map list {roomarea} {$map[dest]} {variable} {rooms};
-    #if {&rooms[] == 0}
-    {
-    	#echo {No room in the area $map[dest]};
-    	#return;
-    };
-    #local id {0};
-    #list map[rooms] clear;
-    #foreach {*rooms[%*]} {id}
-    {
-    	#list map[rooms] add {$id};
-    };
-    #var map[mode] 1;
-    map.run;
-}
-
-#nop 内部函数，按照map[rooms]里面的列表移动;
-#alias {map.run}
-{
-    #if {$map[running] == 1}
-    {
-        #echo {You are in running already};
-        #return;
-    };
-    #if {&map[rooms][] == 0}
-    {
-        #echo {The rooms is empty};
-        #return;
-    };
-    #if {"$map[keyword]" != ""}
-    {
-    	#action {$map[keyword]}
-    	{
-    		#var map[pos][vnum] $inroom[map][vnum];
-			#var map[pos][name] $inroom[map][name];
-			#echo {Found $map[keyword] in $map[pos][name]($map[pos][name]) of $map[dest]};
-			#var map[rooms] {};
-			#path destroy;
-			#bell;
-			#unact {$map[keyword]};
-			map.reach;
-    	} {1};
-    };
-    #var map[running] 1;
-    #var map[p_step] 0;
-    #var map[m_step] 0;
-    #var map[g_step] 0;
-    #var map[final_step] 0;
-    #event {END OF PATH} {map.reach};
-    map.reach;
-}
-
-#alias {map.stop}
-{
-	#var map[running] 0;
-    #unevent {END OF PATH};
-    #if {"$map[keyword]" != ""}
-    {
-    	#unact {$map[keyword]};
-    };
-    #echo {Finish this running};
-    #if {"$map[guard]" != ""}
-    {
-    	tell $map[guard] $map[keyword] in $map[pos][name]($map[pos][vnum]) of $map[dest];
-    	#var map[guard] {};
-    };
-    #if {"$map[after]" != ""}
-    {
-        $map[after];
-        #var map[after] {};
-    };
-}
-
-#alias {map.abort}
-{
-	#map undo;
-	#echo {Abort the running};
-	map.stop;
-	#bell;
-}
-
-#nop 内部函数，到达一个房间时掉用;
-#alias {map.reach}
-{
-    #if {&map[rooms][] == 0}
-    {
-    	#nop mode = 0, 异步行走模式，要等游戏到达目的地才结束;
-    	#if {$map[mode] == 0}
-    	{
-    		#var map[final_step] $map[m_step];
-    	};
-    	#else
-    	{
-    		map.stop;
-    	};
-        #return;
-    };
-    #nop 要求rooms里面保存的是vnum;
-    #local next $map[rooms][+1];
-    #nop 要求rooms里面保存的是vnum;
-    #local next $map[rooms][+1];
-    #list map[rooms] delete +1;
-    #if {$inroom[map][vnum] == $next}
-    {
-        map.reach;
-        #return;
-    };
-    #map find $next;
-    #if {$map[g_step] == $map[m_step] && $map[m_step] == $map[p_step]}
-    {
-    	#math map[p_step] {$map[p_step] + 1};
-    	#path walk forward;
-    };
+	walk.start roomarea %2;
 }
 
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
-    #var inroom[cname] %2;
-    #nop 自动行走时;
-    #if {$map[running]}
-    {
-        #math map[g_step] {$map[g_step] + 1};
-        #if {$map[mode] == 1}
-        {
-        	#local delay {0.1};
-    		#if {$inroom[map][vnum] == 383} 
-    		{
-    			#echo Enter a special room, need to delay;
-    			#local delay {1.5};
-    		}
-        	#nop 同步的模式;
-            #if {$map[g_step] == $map[m_step] && $map[m_step] == $map[p_step]}
-            {
-                #delay {$delay} {#math map[p_step] {$map[p_step] + 1};#path walk forward};
-            };
-        };
-        #elseif {$map[final_step] != 0 && $map[g_step] == $map[final_step]}
-        {
-        	#nop 异步模式，当游戏到达终点时才调用stop;
-        	#delay {0.1} {map.stop};
-        }
-    };
+    #var inroom[game][name] %2;
     #if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
     #if {"%2" == "荡悠悠三更梦"} {map_pos dream};
     #if {$edit[name] != 1} {#return};
-    #if {"$inroom[cname]" != "$inroom[map][name]"} {#map set roomname $inroom[cname];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[cname]};#var inroom[map][name] $inroom[cname];#bell;};
+    #if {"$inroom[game][name]" != "$inroom[map][name]"} {#map set roomname $inroom[game][name];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[game][name]};#var inroom[map][name] $inroom[game][name];#bell;};
 }
 #event {MAP ENTER ROOM}
 {
     #map get all {inroom[map]} {%0};
-    #if {$map[running] == 1}
-    {
-        #math map[m_step] {$map[m_step] + 1};
-        #if {$map[mode] == 0}
-        {
-        	#delay {0.2} {#path walk forward};
-        };
-    };
 }
 
 #act {^%1一把抓住了你！$} {map.abort}
@@ -236,10 +70,10 @@
 #alias {map_style} {#map flag asciigraphics}
 #func {map_draw} {
 	#local __color {<099>};
-	#if {"$inroom[cname]" != "$inroom[map][name]"} {
+	#if {"$inroom[game][name]" != "$inroom[map][name]"} {
 		#local __color {<139>};
 	};
-	#format {result} {%s - %s%s<099> #%s@%s} {$inroom[cname]} {$__color} {$inroom[map][name]} {$inroom[map][vnum]} {$inroom[map][area]}
+	#format {result} {%s - %s%s<099> #%s@%s} {$inroom[game][name]} {$__color} {$inroom[map][name]} {$inroom[map][vnum]} {$inroom[map][area]}
 }
 #alias {map_pos} {
 	#if {"%1" == ""} {#echo {Syntax: map_pos <room name>|<room vnum>|<exits>};#return};
@@ -263,8 +97,8 @@
 #alias {map.new} {#map dig %0 new}
 #alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};
 #alias {map.setname} {
-	#map set roomname $inroom[cname];
-	#var inroom[map][name] $inroom[cname];
+	#map set roomname $inroom[game][name];
+	#var inroom[map][name] $inroom[game][name];
 	#bell;
 }
 #alias {map.save} {

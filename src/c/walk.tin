@@ -1,0 +1,141 @@
+#var walk {{mode}{0}{running}{0}{rooms}{}{p_step}{0}{m_step}{0}{g_step}{0}{keyword}{sDQn089Z8PfH4qWModjFPGTEI591Dw33kTDGB3tD}}
+
+#event {VARIABLE UPDATED inroom[map]} 
+{
+	#if {$walk[running] == 1}
+    {
+        #math walk[m_step] {$walk[m_step] + 1};
+        #if {$walk[mode] == 0}
+        {
+        	#delay {0.2} {#path walk forward};
+        };
+    };
+}
+
+#event {VARIABLE UPDATED inroom[game][name]}
+{
+	#nop 自动行走时;
+    #if {$walk[running] == 1}
+    {
+        #math walk[g_step] {$walk[g_step] + 1};
+        #if {$walk[mode] == 1}
+        {
+        	#local delay {0.1};
+    		#if {$inroom[map][vnum] == 383} 
+    		{
+    			#echo Enter a special room, need to delay;
+    			#local delay {1.5};
+    		};
+        	#nop 同步的模式;
+            #if {$walk[g_step] == $walk[m_step] && $walk[m_step] == $walk[p_step]}
+            {
+                #delay {$delay} {#math walk[p_step] {$walk[p_step] + 1};#path walk forward};
+            };
+        };
+        #elseif {$walk[final_step] != 0 && $walk[g_step] == $walk[final_step]}
+        {
+        	#nop 异步模式，当游戏到达终点时才调用stop;
+        	#delay {0.1} {walk.arrive};
+        }
+    };
+}
+#event {END OF PATH}
+{
+	#if {$walk[running] == 1}
+	{
+		walk.to;
+	};
+}
+
+#act {$walk[keyword]}
+{
+	#local s {$walk[keyword] showed in $inroom[map][name]($inroom[map][vnum]) of $inroom[map][area]};
+	#foreach {$walk[recievers]} {reciever}
+	{
+		tell $reciever $s;
+	};
+	ui.send $s;
+	#bell;
+	walk.stop;
+} {2}
+
+#alias {walk.start}
+{
+	#local dest {};
+	#map list {%1} {%2} {variable} {dest};
+	#if {&dest[] == 0}
+	{
+		#echo {No rooms to list by %1<%2>};
+		walk.stop;
+		#return;
+	};
+	#if {"%1" == "roomname"}
+	{
+		#list walk[rooms] add *dest[+1];
+	};
+	#else
+	{
+		#local id 0;
+		#foreach {*dest[%*]} {id}
+		{
+			#list walk[rooms] add $id;
+		};
+	};
+	#var walk[dest][type] {%1};
+	#var walk[dest][name] {%2};
+	#var walk[running] 1;
+	#echo {Start walk to %1 %2 ...};
+	walk.to;
+}
+
+#alias {walk.to}
+{
+	#if {&walk[rooms][] == 0}
+	{
+		#nop mode = 0, 异步行走模式，要等游戏到达目的地才结束;
+    	#if {$walk[mode] == 0}
+    	{
+    		#var walk[final_step] $walk[m_step];
+    	};
+    	#else
+    	{
+    		walk.arrive;
+    	};
+        #return;
+	};
+
+    #local next $walk[rooms][+1];
+    #list walk[rooms] delete +1;
+    #if {$inroom[map][vnum] == $next}
+    {
+    	#nop 当地图上的位置已经在目的地，则跳过;
+        walk.to;
+        #return;
+    };
+    #map find $next;
+    #if {$walk[g_step] == $walk[m_step] && $walk[m_step] == $walk[p_step]}
+    {
+    	#nop 当游戏、地图和路径行进完全同步时，需要这里触发下一步，否则由游戏那里触发;
+    	#math walk[p_step] {$walk[p_step] + 1};
+    	#path walk forward;
+    };
+}
+
+#alias {walk.arrive}
+{
+	#nop it's done;
+	#echo {Arrived to $walk[dest][type] $walk[dest][name]};
+	#bell;
+	#delay {0.5} {#unvar walk};
+	#class walk kill;
+}
+
+#alias {walk.stop}
+{
+	#var walk[running] 0;
+	#path destroy;
+	#echo {Aborted the walking};
+	#bell;
+	#delay {0.5} {#unvar walk};
+	#class walk kill;
+}
