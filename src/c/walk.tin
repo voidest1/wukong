@@ -47,6 +47,10 @@
 	};
 }
 
+#act {^%1一把抓住了你！$} {walk.stop} {2}
+#act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {walk.stop} {2}
+#act {^你的动作还没有完成，不能移动。$} {walk.stop} {2}
+#act {^这个方向没有出路。$} {walk.stop} {2]}
 #act {$walk[keyword]}
 {
 	#local s {$walk[keyword] showed in $inroom[map][name]($inroom[map][vnum]) of $inroom[map][area]};

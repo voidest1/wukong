@@ -47,10 +47,6 @@
     #map get all {inroom[map]} {%0};
 }
 
-#act {^%1一把抓住了你！$} {map.abort}
-#act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {map.abort}
-#act {^你的动作还没有完成，不能移动。$} {map.abort}
-
 #act {^护宫卫士大喝一声：下去！你被扔回了下界。$} {map_pos 96;#bell}
 #alias {map} {
 	#if {"%1" == ""} {
