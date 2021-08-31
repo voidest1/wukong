@@ -47,9 +47,9 @@
 	};
 }
 
-#act {^%1一把抓住了你！$} {walk.stop 1} {2}
-#act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {walk.stop 1} {2}
-#act {^你的动作还没有完成，不能移动。$} {walk.stop 1} {2}
+#act {^%1一把抓住了你！$} {walk.stop} {2}
+#act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {walk.stop} {2}
+#act {^你的动作还没有完成，不能移动。$} {walk.stop} {2}
 #act {^这个方向没有出路。$} {walk.stop} {2]}
 #act {$walk[keyword]}
 {
@@ -97,7 +97,7 @@
 	#if {&walk[rooms][] == 0}
 	{
 		#nop mode = 0, 异步行走模式，要等游戏到达目的地才结束;
-    	#if {$walk[mode] == 0}
+    	#if {$walk[mode] == 0 && $walk[p_step] != 0}
     	{
     		#var walk[final_step] $walk[m_step];
     	};
@@ -136,10 +136,6 @@
 
 #alias {walk.stop}
 {
-	#if {%1 == 1}
-	{
-		#map undo;
-	};
 	#var walk[running] 0;
 	#path destroy;
 	#echo {Aborted the walking};

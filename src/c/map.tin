@@ -32,13 +32,22 @@
 	};
 	walk.start roomarea %2;
 }
-#act {^你的动作还没有完成，不能移动。$} {#map undo};
+#alias {ms}
+{
+	#local pos {%1};
+	#if {"%1" == ""} 
+	{
+		#local pos $inroom[game][name];
+	};
+	#map goto $pos;
+}
+#act {^你的动作还没有完成，不能移动。$} {#map undo}
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
     #var inroom[game][name] %2;
-    #if {$init == 1} {ui;map_pos %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
-    #if {"%2" == "荡悠悠三更梦"} {map_pos dream};
+    #if {$init == 1} {ui;ms %2;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
+    #if {"%2" == "荡悠悠三更梦"} {ms dream};
     #if {$edit[name] != 1} {#return};
     #if {"$inroom[game][name]" != "$inroom[map][name]"} {#map set roomname $inroom[game][name];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[game][name]};#var inroom[map][name] $inroom[game][name];#bell;};
 }
@@ -55,7 +64,7 @@
     #map get all {inroom[map]} {%0};
 }
 
-#act {^护宫卫士大喝一声：下去！你被扔回了下界。$} {map_pos 96;#bell}
+#act {^护宫卫士大喝一声：下去！你被扔回了下界。$} {ms 96;#bell}
 #alias {map} {
 	#if {"%1" == ""} {
 		#line quiet {#map destroy world};
@@ -78,10 +87,6 @@
 		#local __color {<139>};
 	};
 	#format {result} {%s - %s%s<099> #%s@%s} {$inroom[game][name]} {$__color} {$inroom[map][name]} {$inroom[map][vnum]} {$inroom[map][area]}
-}
-#alias {map_pos} {
-	#if {"%1" == ""} {#echo {Syntax: map_pos <room name>|<room vnum>|<exits>};#return};
-	#map goto {%1};
 }
 
 #func {map_area_c2e} {
@@ -133,9 +138,9 @@
 }
 #alias fly {
 	#send {fly %0};
-	#act {^到了！你按下云头跳了下来。$} {map_pos %0;#unact {^到了！你按下云头跳了下来。$}};
+	#act {^到了！你按下云头跳了下来。$} {ms %0;#unact {^到了！你按下云头跳了下来。$}};
 	#act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
 	#delay {3} {#unact {^到了！你按下云头跳了下来。$}};
 }
-#act {^警幻仙姑说道：又是一根木头...好，你这就去吧。$} {map_pos $bed;#unvar bed}
+#act {^警幻仙姑说道：又是一根木头...好，你这就去吧。$} {ms $bed;#unvar bed}
 #alias sleep {#var bed $inroom[map][vnum];#send sleep %0}
