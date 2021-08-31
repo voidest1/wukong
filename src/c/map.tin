@@ -32,7 +32,7 @@
 	};
 	walk.start roomarea %2;
 }
-
+#act {^你的动作还没有完成，不能移动。$} {#map undo};
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
@@ -42,6 +42,14 @@
     #if {$edit[name] != 1} {#return};
     #if {"$inroom[game][name]" != "$inroom[map][name]"} {#map set roomname $inroom[game][name];ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[game][name]};#var inroom[map][name] $inroom[game][name];#bell;};
 }
+#act {^%s这里%2的出口是%s%4。$} {
+	#local s {%4};
+	#replace s {、} {;};
+	#replace s {和} {;};
+	#replace s { } {};
+	#var inroom[game][exits] $s;
+}
+
 #event {MAP ENTER ROOM}
 {
     #map get all {inroom[map]} {%0};

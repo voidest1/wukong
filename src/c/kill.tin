@@ -2,9 +2,9 @@
 #alias {ak} {ask li jing about newkill}
 #alias {ds} {decode shu}
 #alias {k} {perform qianyan;#delay {6} {follow $kill[monster][ename];kill $kill[monster][ename]}}
-#alias {r} {#delay {1} {mingsi 200}};
+#alias {r} {#delay {3} {mingsi 200}};
 #act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;#if {$kill[killing] == 1} {dazuo 200}}};
-#act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;#if {$kill[killing] == 1} {fly sky;#delay {2} {g lijing ak}}}}
+#act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;#if {$kill[killing] == 1} {fly sky;#delay {3} {g lijing ak}}}}
 #alias {kill.start} {
 	#if {"%3" == ""}
 	{

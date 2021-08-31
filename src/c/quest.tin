@@ -1,0 +1,19 @@
+#var quests[armor] {{pos}{225}{task}{armor}{who}{po}}
+#var quests[flower] {{pos}{259}{task}{募捐}{who}{lan}}
+#var quests[weapon] {{pos}{226}{task}{weapon}{who}{gong}}
+#var quests[food] {{pos}{253}{task}{food}{who}{zhu}}
+#var quests[give] {{pos}{274}{task}{give}{who}{yin}}
+#var quests[ask] {{pos}{273}{task}{ask}{who}{chen}}
+#var quests[kill] {{pos}{275}{task}{kill}{who}{hu}}
+#var quests[h] {{pos}{696}}
+#alias {q}
+{
+	#if {"%0" == ""}
+	{
+		#echo {Syntax: q <armor|flower|weapon|food|give|ask|kill|h>};
+		#return;
+	};
+	g $quests[%1][pos];
+}
+#alias {aq} {g kaifeng;#delay {10} {ne;n;e;e;ask lan about 募捐;w;w;n;n;n;e;e;ask zhu about food;w;w;n;nw;sw;s;w;w;s;ask po about 盔甲;n;n;ask gong about 兵器;s;e;e;s;s;s;se;se;s;eu;s;s;ask chen about 求贤;w;ask yin about 难民;e;e;ask hu about kill}};
+#act {^你连忙俯身一拜，小心翼翼地站起来。$} {#delay {100} {g safe}};
