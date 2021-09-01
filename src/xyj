@@ -51,6 +51,7 @@
 #PATHDIR {dive} {u} {55}
 #PATHDIR {backyard} {frontyard} {56}
 #PATHDIR {frontyard} {backyard} {57}
+#PATHDIR {jump shi bi} {d} {58}
 
 #list lines create
 #ACTION {^>%s$} {#if {$config[gag_prompt] == 1} {#line gag}} {4}
@@ -95,7 +96,7 @@
 #func capital {#format result {%n} {%0}}
 #var config {{ui}{0}{panel_cols}{50}{game_cols}{100}{logging}{0}}
 
-#alias init {
+#alias _init {
      #unact {^重新连线完毕。$};
 	#unact {终端机型态设定为 TINTIN++。};
      #var init 1;
@@ -104,8 +105,8 @@
      #screen save label;
      #screen set label {$user[id]};
 }
-#act {终端机型态设定为 TINTIN++。} {init}
-#act {^重新连线完毕。$} {init}
+#act {终端机型态设定为 TINTIN++。} {_init}
+#act {^重新连线完毕。$} {_init}
 #event {SESSION CONNECTED} {
      wk_require data;
 	wk_require user;

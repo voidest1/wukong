@@ -102,14 +102,38 @@
 	}
 }
 #nop ####### Edit ######;
-#var edit {{name}{0}}
-#alias {map.new} {#map dig %0 new}
-#alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};
+#alias {map.setarea}
+{
+	#if {"%0" == "" || ("%2" != "" && "%3" == "")}
+	{
+		#echo {Syntax: map.setarea <areaname> [<from vnum> <to vnum>]};
+		#bell;
+		#return;
+	};
+	#if {"%3" != ""}
+	{
+		#loop {%2} {%3} {n}
+		{
+			#map set {roomarea} {%1} {$n};
+		};
+		#echo {Setup area %1 from %2 to %3};
+	};
+	#else
+	{
+		#map set {roomarea} {%1};
+		#echo {Setup area %1 to $inroom[map][name]};
+		#var inroom[map][area] {%1};
+	}
+}
 #alias {map.setname} {
-	#map set roomname $inroom[game][name];
+	#map set {roomname} $inroom[game][name];
 	#var inroom[map][name] $inroom[game][name];
 	#bell;
 }
+#var edit {{name}{0}}
+#alias {map.new} {#map dig %0 new}
+#alias {map.autoname} {#math edit[name] {($edit[name] + 1) % 2};#local s {ON};#if {$edit[name] == 0} {#local s {OFF}};ui_message {Switch auto-name to $s};#bell};
+
 #alias {map.save} {
 	#map write {./map/xyj.map};
 	#echo {Saved map to ./map/xyj.map};
