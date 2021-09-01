@@ -1,9 +1,0 @@
-#alias {map.setarea}
-{
-	#if {"%0" == "" || ("%2" != "" && "%3" == "")}
-	{
-		#echo {Syntax: map.setarea <areaname> [<from vnum> <to vnum>]};
-		#bell;
-		#return;
-	}
-}

@@ -1,4 +1,56 @@
-#alias {maze.start}
+#var mazes[zizhulin] {{in}{{vnum}{380}{name}{◊œ÷Ò¡÷}{exits}{ne;nw;s}{enter}{nw}}
+					{out}{{name}{◊œ÷Ò¡÷}{exits}{e;n;w;s}{vnum}{698}{enter}{s}}}
+#var step 0
+#var final {}
+#var start {}
+
+#event {VARIABLE UPDATED inroom[game][exits]} 
 {
-	
+	#if {"$final[name]" == "$inroom[game][name]" && "$final[exits]" == "$inroom[game][exits]"}
+	{
+		ms $final[vnum];
+		#echo {You are at destination, run out of the maze, total $step steps};
+		#bell;
+		maze.stop;
+		#return;
+	};
+	#if {"$start[name]" == "$inroom[game][name]" && "$start[exits]" == "$inroom[game][exits]"}
+	{
+		#echo {You are back to start point, run again};
+		$start[enter];
+		maze.stop;
+		#return;
+	};
+	#math step {$step + 1};
+	#local e {};
+	#foreach {$inroom[game][exits]} {n} {#list e add $n};
+	#local i 0;
+	#math {i} {1 d &e[]};
+	$e[+$i];
+}
+
+#alias {maze.run}
+{
+	#if {&mazes[%1] == 0}
+	{
+		#echo {The maze %1 isn't exists};
+		#bell;
+		maze.stop;
+		#return;
+	};
+	#var start $mazes[%1][%2];
+	#var final $mazes[%1][%3];
+	#if {$inroom[map][vnum] != $start[vnum]}
+	{
+		#echo {You must go to start point #$start[vnum] first};
+		#bell;
+		maze.stop;
+		#return;
+	};
+	$start[enter];
+}
+
+#alias {maze.stop}
+{
+	#class maze kill;
 }

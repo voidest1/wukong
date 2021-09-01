@@ -70,6 +70,11 @@
 	};
 	#map goto $pos;
 }
+#alias {map.maze}
+{
+	wk_require maze;
+	maze.run %0;
+}
 #act {^你的动作还没有完成，不能移动。$} {#map undo}
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
