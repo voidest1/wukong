@@ -1,6 +1,6 @@
 #var walk {{mode}{0}{running}{0}{rooms}{}{p_step}{0}{m_step}{0}{g_step}{0}{keyword}{sDQn089Z8PfH4qWModjFPGTEI591Dw33kTDGB3tD}}
 
-#event {VARIABLE UPDATED inroom[map]} 
+#event {VARIABLE UPDATED inroom[map][changed]}
 {
 	#if {$walk[running] == 1}
     {
@@ -58,6 +58,7 @@
 	{
 		tell $reciever $s;
 	};
+	tell $map[guard] $s;
 	ui.send $s;
 	#bell;
 	walk.stop;
@@ -117,6 +118,13 @@
         #return;
     };
     #map find $next;
+    #local len 0;
+    #path get {length} {len};
+    #if {$len == 0}
+    {
+    	walk.to;
+    	#return;
+    }; 
     #if {$walk[g_step] == $walk[m_step] && $walk[m_step] == $walk[p_step]}
     {
     	#nop 当游戏、地图和路径行进完全同步时，需要这里触发下一步，否则由游戏那里触发;

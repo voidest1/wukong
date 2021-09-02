@@ -18,6 +18,7 @@
 	#var kill[mobs] 0;
 	ui_message {开始灭妖(newkill)};
 }
+#alias {kill.pause} {#math kill[killing] {($kill[killing] + 1) % 2};#if {$kill[killing] == 0} {#echo {killing is pause}};#else {#echo {Killing is continue}}}
 #act {^李靖对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
 	#untick {an};
 	#format ename {%l} {%2}; 

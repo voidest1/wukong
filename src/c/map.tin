@@ -1,4 +1,4 @@
-#var inroom {}
+#var inroom {{game}{}{map}{}}
 #var map {{running}{0}{rooms}{}{after}{}{mode}{0}}
 
 #alias {g}
@@ -70,29 +70,24 @@
 	};
 	#map goto $pos;
 }
+
 #alias {map.maze}
 {
 	wk_require maze;
 	maze.run %0;
 }
+
 #act {^你的动作还没有完成，不能移动。$} {#map undo}
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
-    #var inroom[game][name] %2;
+    #var inroom[game][name] {%2};
     #if {"%2" == "荡悠悠三更梦"} {ms dream};
-    #if {$edit[name] != 1} {#return};
-    #if {"$inroom[game][name]" != "$inroom[map][name]"} 
-    {
-    	#map set roomname $inroom[game][name];
-    	ui_message {#$inroom[map][vnum] Changed $inroom[map][name] to $inroom[game][name]};
-    	#var inroom[map][name] $inroom[game][name];
-    	#bell;
-    };
 }
 #act {^%s这里%2的出口是%s%4。$} {
 	#local s {%4};
 	#local r {{、}{;}{和}{;}{ }{}{down}{d}{east}{e}{north}{n}{south}{s}{west}{w}{up}{u}};
+	#local f {};
 	#foreach {*r[%*]} {f} {#replace s {$f} {$r[$f]}};
 	#var inroom[game][exits] $s;
 	#if {$init == 1} {ui;ms;#echo {---- Welcome to 悟空v0.0.1 for 西游记(MUD) ----};#unvar init};
@@ -101,6 +96,7 @@
 #event {MAP ENTER ROOM}
 {
     #map get all {inroom[map]} {%0};
+    #var inroom[map][changed] 1;
 }
 
 #act {^护宫卫士大喝一声：下去！你被扔回了下界。$} {ms 96;#bell}
@@ -201,7 +197,8 @@
 }
 #alias fly {
 	#send {fly %0};
-	#act {^到了！你按下云头跳了下来。$} {ms %0;#unact {^到了！你按下云头跳了下来。$}};
+	#var _area %0;
+	#act {^到了！你按下云头跳了下来。$} {ms $_area;#unvar _area;#unact {^到了！你按下云头跳了下来。$}};
 	#act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
 	#delay {3} {#unact {^到了！你按下云头跳了下来。$}};
 }
