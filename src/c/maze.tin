@@ -3,6 +3,7 @@
 #var step 0
 #var final {}
 #var start {}
+#var exit {}
 
 #event {VARIABLE UPDATED inroom[game][exits]} 
 {
@@ -49,7 +50,11 @@
 	};
 	$start[enter];
 }
-
+#alias {maze.out}
+{
+	#var exit %1;
+	
+}
 #alias {maze.stop}
 {
 	#class maze kill;

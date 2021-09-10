@@ -1,31 +1,34 @@
-#nop -------score--------
+#nop -------score--------;
 #act {^【%1】%2 %3(@capital{$user[id]})$} {#var user[name] %3}
 #act {^ 你是一位%1岁的%2性人类，西游%3生。$} {#var user[age] %1;#var user[gener] %2}
 #act {^ 体格：[%s%d]  根骨：[%s%d]  悟性：[%s%d]  灵性：[%s%d]$} {#var user[str] %2;#var user[int] %4;#var user[spi] %6;#var user[con] %8}
 #act {^ 兵器伤害力：[%d]%s盔甲保护力：[%d]$} {#var user[weapon] %1;#var user[armor] %3}
 
-#nop -------hp----------
+#nop -------hp----------;
 #act {^%s气血：%s%d/%s%d%s\(%s%d\%\)%s内力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var user[kee] %3;#var user[kee_max] %5;#var user[force] %11;#var user[force_max] %14;#var user[enforce] %19;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s精神：%s%d/%s%d%s\(%s%d\%\)%s法力：%s%d%s/%s%d%s\(%s%d\%\)%s\(\+%d\)$} {#var user[sen] %3;#var user[sen_max] %5;#var user[mana] %11;#var user[mana_max] %14;#var user[enchant] %19;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s食物：%s%d/%s%d%s武学：%s%d%s$} {#var user[food] %3;#var user[food_max] %5;#var user[wx] %8;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s饮水：%s%d/%s%d%s道行：%s%+%s$} {#var user[water] %3;#var user[water_max] %5;#var user[dh] %8;#if {$config[gag_hp] == 1} {#line gag}}
 #act {^%s潜能：%s%d%s杀气：%s%d%s$} {#var user[potential] %3;#var user[sq] %6;#if {$config[gag_hp] == 1} {#line gag}}
 
-#nop -------skills------
+#nop -------skills------;
 #act {^｜%+2a%S%+1s(%S)%s-%s%S%s%d/%s%d｜$} {#var skills[%4] {{id}{%4}{name}{%2}{level}{%9}{exp}{%11}{enable}{0}};#if {"%1" == "□"} {#var skills[%4][enable] 1}}
 
-#nop ------inventory-----
+#nop ------inventory-----;
 #act {^你身上带着下列这些东西(负重%s%d%)：$} {
 	#var user[weight] {%2};
 	#var user[inventory] {};
 	#class inventory read {./src/c/inventory.tin}
 }
 
-#nop ------chat---------
-#act {^%1告诉你：%2} {#if {"%2" == "come to kill"} {g kp;#delay {10} {k}};#else {ui_message {%0}}} {9}
+#nop ------chat---------;
+#act {^%1告诉你：%2} {#if {"%2" == "come to kill"} {g {$kill[kp]} {k}};#else {ui_message {%0}}} {9}
 #act {^%1在你的耳边悄声说道：%2$} {ui_message {%0}}
 #act {^%1回答你：%2$} {ui_message {%0}}
 #act {^【队伍】%1：%2$} {ui_message {%0}}
 
-#nop -----scouter----------
+#nop -----scouter----------;
 #act {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} {scout {%2(@capital{%3})} {%5} {%6}} {1}
+
+
+#act {( 你气喘嘘嘘，看起来状况并不太好。 )} {er}

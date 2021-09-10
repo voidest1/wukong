@@ -9,6 +9,7 @@
         #return;
     };
     wk_require walk;
+    #var walk[after] %2;
     walk.start roomname {%1};
 }
 #alias {scout}
@@ -77,7 +78,7 @@
 	maze.run %0;
 }
 
-#act {^你的动作还没有完成，不能移动。$} {#map undo}
+#act {^你的动作还没有完成，不能移动。$} {#map undo} {3}
 #nop look输出的房间名称，注意：因为这是第一行事件，想在内容显示完毕再做的指令，需要延迟0.1s;
 #act {^%P%S%P - %P$}
 {
@@ -196,9 +197,10 @@
     #echo {$cnt duplicated names has been changed.};
 }
 #alias fly {
-	#send {fly %0};
-	#var _area %0;
-	#act {^到了！你按下云头跳了下来。$} {ms $_area;#unvar _area;#unact {^到了！你按下云头跳了下来。$}};
+	#send {fly %1};
+	#var _after_fly {%2};
+	#var _area %1;
+	#act {^到了！你按下云头跳了下来。$} {ms $_area;#unvar _area;$_after_fly;#unvar _after_fly;#unact {^到了！你按下云头跳了下来。$}};
 	#act {^咦？．．．怎么还在原来的地方？$} {#map undo;#unact {^到了！你按下云头跳了下来。$}};
 	#delay {3} {#unact {^到了！你按下云头跳了下来。$}};
 }

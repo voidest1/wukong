@@ -94,11 +94,12 @@
      }
 }
 #func capital {#format result {%n} {%0}}
-#var config {{ui}{0}{panel_cols}{50}{game_cols}{100}{logging}{0}}
+#var config {{ui}{0}{panel_cols}{50}{game_cols}{90}{logging}{0}}
 
 #alias _init {
      #unact {^重新连线完毕。$};
 	#unact {终端机型态设定为 TINTIN++。};
+     #class data read {data/$user[id].dat};
      #var init 1;
      i;score;hp;look;
 
@@ -113,7 +114,6 @@
      wk_require ui;
      wk_require hp;
      wk_require map;
-	#line quiet {#class data read {./data/$user[id].dat}};
 }
 #event {SESSION DEACTIVATED} {
 	#screen load label;

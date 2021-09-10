@@ -1,1 +1,33 @@
-#ACTION {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} {#var map[guard] %6;scout {%2(@capital{%3})} %5} {1}
+#ACTION {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} 
+{
+	#local keyword {%2(@capital{%3})};
+	#if {"%5" != "%4"}
+	{
+		#var map[guard] %6;
+		scout {$keyword} %5;
+	};
+	#else
+	{
+		#var area @area2{%5};
+		#if {"$area" == "%5"}
+		{
+			tell %6 I cannot go to %5 yet;
+			#return;
+		};
+		#var map[guard] %6;
+		fly $area {#var map[scout_after] {g $area {fly changan}};scout {$keyword} $area};
+	};
+} {1}
+
+#func {area2}
+{
+	#switch {"%0"}
+	{
+		#case {"毒敌山"} {#return {dudi}};
+		#case {"宝象国"} {#return {baoxiang}};
+		#case {"月宫"} {#return {moon}};
+		#case {"钦法国"} {#return {qinfa}};
+		#case {"天竺国"} {#return {tianzhu}};
+		#default {#return %0};
+	};
+}

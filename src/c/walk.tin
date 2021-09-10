@@ -1,4 +1,4 @@
-#var walk {{mode}{0}{running}{0}{rooms}{}{p_step}{0}{m_step}{0}{g_step}{0}{keyword}{sDQn089Z8PfH4qWModjFPGTEI591Dw33kTDGB3tD}}
+#var walk {{mode}{0}{running}{0}{rooms}{}{p_step}{0}{m_step}{0}{g_step}{0}{keyword}{sDQn089Z8PfH4qWModjFPGTEI591Dw33kTDGB3tD}{after}{}}
 
 #event {VARIABLE UPDATED inroom[map][changed]}
 {
@@ -49,7 +49,7 @@
 
 #act {^%1一把抓住了你！$} {walk.stop} {2}
 #act {^但没多会儿就被憋得半死，只好赶紧爬上岸来。$} {walk.stop} {2}
-#act {^你的动作还没有完成，不能移动。$} {walk.stop} {2}
+#nop act {^你的动作还没有完成，不能移动。$} {walk.stop} {2};
 #act {^这个方向没有出路。$} {walk.stop} {2]}
 #act {$walk[keyword]}
 {
@@ -138,6 +138,11 @@
 	#nop it's done;
 	#echo {Arrived to $walk[dest][type] $walk[dest][name]};
 	#bell;
+	#if {"$walk[after]" != ""}
+    {
+        $walk[after];
+    };
+    $map[scout_after];
 	#delay {0.5} {#unvar walk};
 	#class walk kill;
 }
@@ -148,6 +153,7 @@
 	#path destroy;
 	#echo {Aborted the walking};
 	#bell;
+	$map[scout_after];
 	#delay {0.5} {#unvar walk};
 	#class walk kill;
 }

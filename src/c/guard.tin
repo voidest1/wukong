@@ -1,0 +1,42 @@
+#var friends {{白乌鸦}{wcrow}{星雪儿}{snowsong}};
+#ACTION {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} 
+{
+	#var guard[mob] {%3};
+	#var guard[newbie] {wcrow};
+	#local keyword {%2(@capital{%3})};
+	#var guard[keyword] $keyword;
+	#if {"%5" != "%4"}
+	{
+		#var map[guard] %6;
+		scout {$keyword} %5;
+	};
+	#else
+	{
+		#bell;
+		#bell;
+		#bell;
+	};
+} {1}
+#alias {hh} {cast huimeng on $guard[mob]}
+#alias {gg} {get all from $guard[mob];get $guard[mob];get $guard[mob]}
+#alias {kk} {g 12 {drop $guard[mob];tell $guard[newbie] come to kill;e}}
+#alias {mm} {cast mihun on $guard[mob]}
+#alias pgw {fly wudidong;wu;sd;sw;#15 w;e;e;n;buy wan;s};
+#alias {ss} {scout {$guard[mob]} $inroom[map][area] %0}
+#act {%1就地一躺，不一会儿就静静地进入了梦乡。} {gg}
+
+#alias ff {fly changan;n;e;look;}
+#action {国子监是国家培养高级人才的地方。唐朝的学风很浓，在这里不时可} {drop $guard[mob]}
+
+#action {你将%1从背上放了下来，躺在地上。} {follow $guard[mob];tell snowsong come to kill}
+
+#action {%1就地一躺，不一会儿便鼾声大作，沉睡过去。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
+#action {%1就地一躺，不一刻便鼾声大作，进入了梦乡。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
+#action {%1就地一躺，不一会儿就静静地进入了梦乡。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
+#action {%1就地一躺，不一会儿就甜甜地进入了梦乡。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
+#action {%1对着%1喝道：「%2！今日不是你死就是我活！」} {mm;}
+#action {%1神不守舍地看着你，怜香惜玉之心由然而起，竟然忘了自己在战斗之中。} {#delay {15} {mm}}
+#action {%1已经魂不守舍，呆若木鸡了！} {#delay {15} {mm}}
+#action {%1鄙夷地看了你一眼，毫不为所动！} {#delay {8} {mm}}
+#action {从天上徐徐飘下几页天书，落入%1的怀中。} {#if {&players[%1]>0} {utk}}
+#alias utk {#unticker {mieyao}}
