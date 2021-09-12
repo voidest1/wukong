@@ -30,9 +30,12 @@
 	ui_show_messages;
 }
 #alias {ui_show_messages}{
-	#local rows {$config[rows]  - $config[map_rows] - 9};
-	#screen clear square {$config[map_rows] + 3} {$config[panel_left]} {$config[map_rows] + 5 + $rows} {-1};
-	#draw cyan rounded box {$config[map_rows] + 3} {$config[panel_left]} {$config[map_rows] + 5 + $rows} {-1} $messages[-$rows..-1];
+	#local rows 0;
+	#math rows {$config[rows]-$config[map_rows]-8};
+	#screen clear square {$config[map_rows]+3} {$config[panel_left]} {$config[map_rows]+5+$rows} {-1};
+	#draw cyan rounded box {$config[map_rows]+3} {$config[panel_left]} {$config[map_rows]+5+$rows} {-1};
+	#math count {&messages[] > $rows ? $rows : &messages[]};
+	#loop {-$count} {-1} {i} {#show {$messages[$i]} {$config[map_rows]+4+$count+$i} {$config[panel_left]+2}};
 }
 #tick {ui_draw} {
 	#if {$config[ui] != 1} {#return};

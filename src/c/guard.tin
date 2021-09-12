@@ -25,10 +25,10 @@
 #alias {ss} {scout {$guard[mob]} $inroom[map][area] %0}
 #act {%1就地一躺，不一会儿就静静地进入了梦乡。} {gg}
 
-#alias ff {fly changan;n;e;look;}
-#action {国子监是国家培养高级人才的地方。唐朝的学风很浓，在这里不时可} {drop $guard[mob]}
+#alias ff {fly changan;n;e;look}
+#action {国子监是国家培养高级人才的地方。唐朝的学风很浓，在这里不时可} {drop $guard[mob];ms}
 
-#action {你将%1从背上放了下来，躺在地上。} {follow $guard[mob];tell snowsong come to kill}
+#action {你将%1从背上放了下来，躺在地上。} {follow $guard[mob];tell $guard[id] come to kill}
 
 #action {%1就地一躺，不一会儿便鼾声大作，沉睡过去。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
 #action {%1就地一躺，不一刻便鼾声大作，进入了梦乡。} {#delay {4} {get all from $guard[mob];put shoupi qun in $guard[mob];get $guard[mob]}}
@@ -40,3 +40,6 @@
 #action {%1鄙夷地看了你一眼，毫不为所动！} {#delay {8} {mm}}
 #action {从天上徐徐飘下几页天书，落入%1的怀中。} {#if {&players[%1]>0} {utk}}
 #alias utk {#unticker {mieyao}}
+#alias {guard.start} {
+	#var guard[id] %1;
+}

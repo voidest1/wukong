@@ -1,9 +1,9 @@
 #alias {ak} {ask li jing about newkill}
 #alias {ds} {decode shu}
 #alias {k} {follow $kill[monster][id];kill $kill[monster][id];perform qianyan}
-#alias {r} {#delay {3} {#if {$user[mana] < 300} {mingsi 300};#else {dazuo 400}}}
-#act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;#if {$kill[killing] == 1} {dazuo 200}}};
-#act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;ef;#if {$kill[killing] == 1} {fly sky}}}
+#alias {r} {hp;#delay {2} {er;ef;#if {$kill[killing] == 1} {fly sky}}}
+#act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;e}};
+#act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;e}}
 #alias {kill.start} {
 	#if {"%3" == "" && &kill == 0}
 	{
@@ -35,19 +35,20 @@
 }
 #alias {kill.pause} {#math kill[killing] {($kill[killing] + 1) % 2};#if {$kill[killing] == 0} {#echo {killing is pause}};#else {#echo {Killing is continue}}}
 #act {^李靖对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
-	#untick {an};
 	#format id {%l} {%2}; 
 	#var kill[monster] {{name}{%1}{id}{$id}{carea}{%3}{earea}{@map_area_c2e{%3}}};
 	#unvar id;
 	#local s {Kill $kill[monster][name]($kill[monster][id]) in $kill[monster][carea]($kill[monster][earea])};
-	ui_message {$kill[mobs]:$kill[monster][name] in $kill[monster][carea]};
+	#local now {};
+	#format {now} {%t} {%H:%M:%S};
+	ui_message {$kill[mobs] $now:$kill[monster][name] in $kill[monster][carea]};
 	#if {"$kill[guard]" != ""} {tell $kill[guard][id] $s};
 	#if {"$kill[scouter]" != ""} {tell $kill[scouter][id] $s tell $kill[guard][id]};
 	#if {$kill[fly] == 1} {fly changan {g safe {#echo {Don't forget decode shu};#bell}}};
 	#else {g {$kill[kp]}};
 }
 #act {^{$kill[guard][name]}将{$kill[monster][name]}从背上放了下来，躺在地上。$} {k}
-#act {^李靖对手中照妖镜一看，说：这位%1,妖魔已除尽,不妨先去歇息。$} {#tick {an} {#if {$kill[killing] == 1} {ak}} {30}}
 #act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};#if {$kill[fly] == 1} {r};#else {g lijing {ak}}}
 #act {增长天王 魔礼青(Moli qing)} {#if {$kill[killing] == 1} {#delay {0.5} {g lijing}}}
 #act {托塔天王 李靖(Li jing)} {ak}
+#tick {look} {l} {30}
