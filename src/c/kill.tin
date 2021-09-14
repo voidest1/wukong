@@ -1,7 +1,7 @@
 #alias {ak} {ask li jing about newkill}
 #alias {ds} {decode shu}
 #alias {k} {follow $kill[monster][id];kill $kill[monster][id];perform qianyan}
-#alias {r} {hp;#delay {2} {er;ef;#if {$kill[killing] == 1} {fly sky}}}
+#alias {r} {#format now {%T};#if {$now - $kill[time] > 360} {fly sky};#else {g safe;#delay {360 - $now+$kill[time]} {w;#2 d;e;fly sky}}}
 #act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;e}};
 #act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;e}}
 #alias {kill.start} {
@@ -41,6 +41,7 @@
 	#local s {Kill $kill[monster][name]($kill[monster][id]) in $kill[monster][carea]($kill[monster][earea])};
 	#local now {};
 	#format {now} {%t} {%H:%M:%S};
+	#format {kill[time]} {%T};
 	ui_message {$kill[mobs] $now:$kill[monster][name] in $kill[monster][carea]};
 	#if {"$kill[guard]" != ""} {tell $kill[guard][id] $s};
 	#if {"$kill[scouter]" != ""} {tell $kill[scouter][id] $s tell $kill[guard][id]};
@@ -48,7 +49,7 @@
 	#else {g {$kill[kp]}};
 }
 #act {^{$kill[guard][name]}将{$kill[monster][name]}从背上放了下来，躺在地上。$} {k}
-#act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};#if {$kill[fly] == 1} {r};#else {g lijing {ak}}}
-#act {增长天王 魔礼青(Moli qing)} {#if {$kill[killing] == 1} {#delay {0.5} {g lijing}}}
+#act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};#delay {2} {r}};
+#act {增长天王 魔礼青(Moli qing)} {#delay {2} {g lijing}}
 #act {托塔天王 李靖(Li jing)} {ak}
 #tick {look} {l} {30}
