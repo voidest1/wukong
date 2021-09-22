@@ -19,7 +19,6 @@
 	{
 		#echo {You are back to start point, run again};
 		$start[enter];
-		maze.stop;
 		#return;
 	};
 	#math step {$step + 1};

@@ -1,13 +1,13 @@
 #var friends {{白乌鸦}{wcrow}{星雪儿}{snowsong}};
-#ACTION {^%1告诉你：Kill %2(%3) in %4(%5) tell %6$} 
+#ACTION {^%1告诉你：Kill %2(%3) in %4(%5)} 
 {
 	#var guard[mob] {%3};
 	#var guard[newbie] {wcrow};
 	#local keyword {%2(@capital{%3})};
+	ui_message {%2(%3) in %4(%5)};
 	#var guard[keyword] $keyword;
 	#if {"%5" != "%4"}
 	{
-		#var map[guard] %6;
 		scout {$keyword} %5;
 	};
 	#else
@@ -43,3 +43,10 @@
 #alias {guard.start} {
 	#var guard[id] %1;
 }
+#act {$guard[name]动作似乎开始有点不太灵光，但是仍然有条不紊。} {#5 exert recover $guard[id]}
+#act {$guard[name]气喘嘘嘘，看起来状况并不太好。} {#5 exert recover $guard[id]}
+#act {$guard[name]似乎十分疲惫，看来需要好好休息了。} {#5 exert recover $guard[id]}
+#act {$guard[name]已经一副头重脚轻的模样，正在勉力支撑着不倒下去。} {#10 exert recover $guard[id]}
+#act {$guard[name]看起来已经力不从心了。} {#10 exert recover $guard[id]}
+#act {$guard[name]摇头晃脑、歪歪斜斜地站都站不稳，眼看就要倒在地上。} {#10 exert recover $guard[id]}
+#act {$guard[name]已经陷入半昏迷状态，随时都可能摔倒晕去。} {#10 exert recover $guard[id]}

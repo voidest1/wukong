@@ -63,6 +63,7 @@
 #alias {wk_config} {#var config[%1] {%2}}
 #ALIAS {log}
 {
+     #CONFIG {LOG MODE} {PLAIN};
      #if {"%0" == "on"}
      {
           #if {$config[logging] != 1}

@@ -1,7 +1,7 @@
 #alias {ak} {ask li jing about newkill}
 #alias {ds} {decode shu}
 #alias {k} {follow $kill[monster][id];kill $kill[monster][id];perform qianyan}
-#alias {r} {#format now {%T};#if {$now - $kill[time] > 360} {fly sky};#else {g safe;#delay {360 - $now+$kill[time]} {w;#2 d;e;fly sky}}}
+#alias {r} {#format now {%T};#if {$now - $kill[time] > 360} {#if {$kill[fly] == 1} {fly sky};#else {g lijing}};#else {g safe;#delay {360 - $now+$kill[time]} {#if {$kill[fly] == 1} {w;#2 d;e;fly sky};#else {g lijing}}}}
 #act {^你行功完毕，从冥思中回过神来。$} {#delay {2} {ef;e}};
 #act {^你行功完毕，吸一口气，缓缓站了起来。$} {#delay {2} {er;e}}
 #alias {kill.start} {
@@ -33,6 +33,7 @@
 	#var kill[killing] 1;
 	ui_message {开始灭妖，之前灭了{$kill[mobs]}只。};
 }
+#func {now} {#format result {%T}}
 #alias {kill.pause} {#math kill[killing] {($kill[killing] + 1) % 2};#if {$kill[killing] == 0} {#echo {killing is pause}};#else {#echo {Killing is continue}}}
 #act {^李靖对你说道：近有%1(%2)在%3为非作歹，请速去降服！} {
 	#format id {%l} {%2}; 
@@ -44,12 +45,12 @@
 	#format {kill[time]} {%T};
 	ui_message {$kill[mobs] $now:$kill[monster][name] in $kill[monster][carea]};
 	#if {"$kill[guard]" != ""} {tell $kill[guard][id] $s};
-	#if {"$kill[scouter]" != ""} {tell $kill[scouter][id] $s tell $kill[guard][id]};
-	#if {$kill[fly] == 1} {fly changan {g safe {#echo {Don't forget decode shu};#bell}}};
+	#nop if {"$kill[scouter]" != ""} {tell $kill[scouter][id] $s tell $kill[guard][id]};
+	#if {$kill[fly] == 1} {fly changan {ms 1;g safe {#echo {Don't forget decode shu};#bell}}};
 	#else {g {$kill[kp]}};
 }
 #act {^{$kill[guard][name]}将{$kill[monster][name]}从背上放了下来，躺在地上。$} {k}
-#act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};#delay {2} {r}};
-#act {增长天王 魔礼青(Moli qing)} {#delay {2} {g lijing}}
+#act {从天上徐徐飘下几页天书，落入你的怀中。} {#math kill[mobs] {$kill[mobs]+1};tell $kill[guard][id] Finished Kill $kill[monster][name]($kill[monster][id]) in $kill[monster][carea];#delay {2} {r}};
+#act {增长天王 魔礼青(Moli qing)} {#delay {2} {ms 443;g lijing}}
 #act {托塔天王 李靖(Li jing)} {ak}
 #tick {look} {l} {30}

@@ -134,7 +134,8 @@
 		#case "方寸山" {#return fangcun};
 		#case "龙宫" {#return longgong};
 		#case "普陀山" {#return putuo};
-		#default {#return %0};
+		#case "月宫" {#return moon};
+		#default {#return %0;#bell;#bell};
 	}
 }
 #nop ####### Edit ######;
